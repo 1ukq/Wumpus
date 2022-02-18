@@ -147,9 +147,9 @@ public final class ConfigurationFile {
 	 * Must'nt be null as it describes the native agents' capabilities 
 	 */
 	//public static String INSTANCE_CONFIGURATION_ENTITIES=null;
-	public static String INSTANCE_CONFIGURATION_ENTITIES="resources/agentExplo";
+	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/agentExplo";
 	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/agentExplo-2";
-	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/agentExploCoop-2";
+	public static String INSTANCE_CONFIGURATION_ENTITIES="resources/agentExploCoop-2";
 	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/agentExploCoop-2.json";
 	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/agentKeyboardControlled";
 	//public static String INSTANCE_CONFIGURATION_ENTITIES="resources/hunt/map2020-entitiesTree";

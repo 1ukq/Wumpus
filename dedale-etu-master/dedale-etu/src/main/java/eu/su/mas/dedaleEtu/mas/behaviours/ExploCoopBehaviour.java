@@ -130,10 +130,10 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 //				ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 //				msg.setProtocol("SHARE-TOPO");
 //				msg.setSender(this.myAgent.getAID());
-//				if (this.myAgent.getLocalName().equals("1stAgent")) {
-//					msg.addReceiver(new AID("2ndAgent",false));
+//				if (this.myAgent.getLocalName().equals("Explo1")) {
+//					msg.addReceiver(new AID("Explo2",false));
 //				}else {
-//					msg.addReceiver(new AID("1stAgent",false));
+//					msg.addReceiver(new AID("Explo1",false));
 //				}
 //				SerializableSimpleGraph<String, MapAttribute> sg=this.myMap.getSerializableGraph();
 //				try {					
