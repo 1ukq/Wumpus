@@ -69,11 +69,12 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 
 	@Override
 	public void action() {
-
+		
 		if(this.myMap==null) {
 			this.myMap= new MapRepresentation();
 			this.myAgent.addBehaviour(new ShareMapBehaviour(this.myAgent,500,this.myMap,list_agentNames));
 		}
+		
 
 		//0) Retrieve the current position
 		String myPosition=((AbstractDedaleAgent)this.myAgent).getCurrentPosition();
@@ -123,41 +124,6 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 					//System.out.println(this.myAgent.getLocalName()+"-- list= "+this.myMap.getOpenNodes()+"| nextNode: "+nextNode);
 				}else {
 					//System.out.println("nextNode notNUll - "+this.myAgent.getLocalName()+"-- list= "+this.myMap.getOpenNodes()+"\n -- nextNode: "+nextNode);
-				}
-				//4) At each time step, the agent blindly send all its graph to its surrounding to illustrate how to share its knowledge (the topology currently) with the the others agents. 	
-				// If it was written properly, this sharing action should be in a dedicated behaviour set, the receivers be automatically computed, and only a subgraph would be shared.
-
-//				ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-//				msg.setProtocol("SHARE-TOPO");
-//				msg.setSender(this.myAgent.getAID());
-//				if (this.myAgent.getLocalName().equals("Explo1")) {
-//					msg.addReceiver(new AID("Explo2",false));
-//				}else {
-//					msg.addReceiver(new AID("Explo1",false));
-//				}
-//				SerializableSimpleGraph<String, MapAttribute> sg=this.myMap.getSerializableGraph();
-//				try {					
-//					msg.setContentObject(sg);
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//				((AbstractDedaleAgent)this.myAgent).sendMessage(msg);
-
-				//5) At each time step, the agent check if he received a graph from a teammate. 	
-				// If it was written properly, this sharing action should be in a dedicated behaviour set.
-				MessageTemplate msgTemplate=MessageTemplate.and(
-						MessageTemplate.MatchProtocol("SHARE-TOPO"),
-						MessageTemplate.MatchPerformative(ACLMessage.INFORM));
-				ACLMessage msgReceived=this.myAgent.receive(msgTemplate);
-				if (msgReceived!=null) {
-					SerializableSimpleGraph<String, MapAttribute> sgreceived=null;
-					try {
-						sgreceived = (SerializableSimpleGraph<String, MapAttribute>)msgReceived.getContentObject();
-					} catch (UnreadableException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					this.myMap.mergeMap(sgreceived);
 				}
 
 				((AbstractDedaleAgent)this.myAgent).moveTo(nextNode);
