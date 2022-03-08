@@ -23,6 +23,7 @@ public class MapBehaviour extends OneShotBehaviour{
 	private static final long serialVersionUID = -6458087836223103393L;
 	private List<String> receivers;
 	private SmartAgent a;
+	private int exitValue = 0;
 	
 	public MapBehaviour(SmartAgent a, List<String> receivers) {
 		super(a);
@@ -75,7 +76,13 @@ public class MapBehaviour extends OneShotBehaviour{
 			}
 			System.out.println("Merge Map");
 			a.myMap.mergeMap(sgreceived);
+			this.exitValue = 1;
 		}
+	}
+	
+	@Override
+	public int onEnd() {
+		return this.exitValue;
 	}
 
 

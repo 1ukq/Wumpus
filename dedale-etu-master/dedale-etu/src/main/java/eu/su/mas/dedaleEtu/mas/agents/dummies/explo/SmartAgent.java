@@ -5,6 +5,7 @@ import java.util.List;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agent.behaviours.startMyBehaviours;
 import eu.su.mas.dedaleEtu.mas.behaviours.PingBehaviour;
+import eu.su.mas.dedaleEtu.mas.behaviours.RandomMoveBehaviour;
 import eu.su.mas.dedaleEtu.mas.behaviours.MapBehaviour;
 import eu.su.mas.dedaleEtu.mas.behaviours.MoveBehaviour;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
@@ -43,10 +44,15 @@ public class SmartAgent extends AbstractDedaleAgent {
 		fsm.registerFirstState(new PingBehaviour(this,list_agentNames),"PING");
 		fsm.registerState(new MapBehaviour(this,list_agentNames), "MAP");
 		fsm.registerState(new MoveBehaviour(this),"MOVE");
+		fsm.registerState(new RandomMoveBehaviour(this),"RANDOM_MOVE");
 		
 		fsm.registerTransition("PING","MAP",1);
 		fsm.registerTransition("PING","MOVE",0);
-		fsm.registerDefaultTransition("MAP","MOVE");
+		fsm.registerTransition("MAP","RANDOM_MOVE",1);
+		fsm.registerTransition("MAP","MOVE",0);
+		fsm.registerTransition("RANDOM_MOVE","PING",1);
+		fsm.registerTransition("MOVE","PING",1);
+		fsm.registerTransition("RANDOM_MOVE","PING",0);
 		fsm.registerTransition("MOVE","PING",0);
 		
 		List<Behaviour> lb=new ArrayList<Behaviour>();
