@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agent.behaviours.startMyBehaviours;
-import eu.su.mas.dedaleEtu.mas.behaviours.PingBehaviour;
-import eu.su.mas.dedaleEtu.mas.behaviours.MoveBisBehaviour;
-import eu.su.mas.dedaleEtu.mas.behaviours.MapBehaviour;
 import eu.su.mas.dedaleEtu.mas.behaviours.MoveBehaviour;
+import eu.su.mas.dedaleEtu.mas.behaviours.PickupBehaviour;
+import eu.su.mas.dedaleEtu.mas.behaviours.ShareBehaviour;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.FSMBehaviour;
@@ -40,29 +39,19 @@ public class SmartAgent extends AbstractDedaleAgent {
 			}
 		}
 		
-		
 		FSMBehaviour fsm = new FSMBehaviour(this);
-		fsm.registerFirstState(new PingBehaviour(this,list_agentNames),"PING");
-		fsm.registerState(new MapBehaviour(this,list_agentNames), "MAP");
+		fsm.registerFirstState(new ShareBehaviour(this,list_agentNames), "SHARE");
 		fsm.registerState(new MoveBehaviour(this),"MOVE");
-		fsm.registerState(new PickUpBehaviour(this), "PICKUP");
-//		fsm.registerState(new MoveBisBehaviour(this),"MOVE_BIS");
+		fsm.registerState(new PickupBehaviour(this),"PICKUP");
 		
-		fsm.registerTransition("PING","MAP",1);
-		fsm.registerTransition("PING","MOVE",0);
-		
-//		fsm.registerTransition("MAP","MOVE_BIS",1);
-		fsm.registerTransition("MAP","MOVE",1);
-		fsm.registerTransition("MAP","MOVE",0);
-		
-		fsm.registerTransition("MOVE","PICKUP",1);
+		fsm.registerTransition("SHARE","MOVE",0);
+		fsm.registerTransition("SHARE","MOVE",1);
+
 		fsm.registerTransition("MOVE","PICKUP",0);
+		fsm.registerTransition("MOVE","PICKUP",1);
 		
-		fsm.registerTransition("PICKUP","PING",1);
-		fsm.registerTransition("PICKUP","PING",0);
-		
-//		fsm.registerTransition("MOVE_BIS","PING",1);
-//		fsm.registerTransition("MOVE_BIS","PING",0);
+		fsm.registerTransition("PICKUP", "SHARE", 0);
+		fsm.registerTransition("PICKUP", "SHARE", 1);
 		
 		List<Behaviour> lb=new ArrayList<Behaviour>();
 		lb.add(fsm);

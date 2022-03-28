@@ -1,11 +1,6 @@
 package eu.su.mas.dedaleEtu.mas.behaviours;
 
-import java.util.Iterator;
-import java.util.List;
-import dataStructures.tuple.Couple;
-import eu.su.mas.dedale.env.Observation;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
-import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation.MapAttribute;
 import eu.su.mas.dedaleEtu.mas.agents.dummies.explo.SmartAgent;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
 import jade.core.behaviours.OneShotBehaviour;
@@ -34,7 +29,8 @@ public class PickupBehaviour extends OneShotBehaviour{
 		String myPosition=((AbstractDedaleAgent)this.myAgent).getCurrentPosition();
 		
 		if (myPosition!=null) {
-			this.a.pick();
+			System.out.println(this.a.getMyTreasureType());
+			System.out.println(this.a.pick());
 		}
 		
 	}

@@ -14,7 +14,7 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 
-public class MapBehaviour extends OneShotBehaviour{
+public class ShareBehaviour extends OneShotBehaviour{
 	
 	/**
 	 * Sends its map and waits until it receives a map. Then merges it with its own map.
@@ -23,8 +23,9 @@ public class MapBehaviour extends OneShotBehaviour{
 	private List<String> receivers;
 	private SmartAgent a;
 	private int exitValue = 0;
+	private String neighbor = null;
 	
-	public MapBehaviour(SmartAgent a, List<String> receivers) {
+	public ShareBehaviour(SmartAgent a, List<String> receivers) {
 		super(a);
 		this.receivers=receivers;
 		this.a = a;
@@ -33,19 +34,55 @@ public class MapBehaviour extends OneShotBehaviour{
 	
 	@Override
 	public void action() {
-		System.out.println(this.myAgent.getLocalName());
-		System.out.println("MAP");
+		
+		this.pingProcedure();
+		
+		if(this.neighbor != null) {
+			this.mapProcedure();
+		}
+	}
+	
+	private void pingProcedure() {
+		/*
+		 * Sends ping to everyone and check if it received ping. 
+		 * If so, set the sender to neighbor.
+		 */
+		
+		// send ping to all agents 
+		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+		msg.setSender(this.myAgent.getAID());
+		for(String agentName : receivers) {
+			msg.addReceiver(new AID(agentName, AID.ISLOCALNAME));
+		}
+		msg.setContent("ping");
+		((AbstractDedaleAgent)this.myAgent).sendMessage(msg);
+		
+		// recv ping (or not) from one agent and store its name
+		MessageTemplate msgTemplate = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+		ACLMessage msgReceived = this.myAgent.receive(msgTemplate);
+		if(msgReceived != null) {
+			if(msgReceived.getContent().contentEquals("ping")) {
+				neighbor = msgReceived.getSender().getLocalName();
+			}
+		}
+	}
+	
+	private void mapProcedure() {
+		/*
+		 * Sends the map to the neighbor. Check if receives the map from the neighbor,
+		 * if so, merge the two maps and change exit value.
+		 */
+		
+		// setup map sharing
 		if(a.myMap == null){
 			a.myMap = new MapRepresentation();
 		}
 		
+		// send map to neighbor
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setProtocol("SHARE-TOPO");
 		msg.setSender(this.myAgent.getAID());
-		for (String agentName : receivers) {
-			msg.addReceiver(new AID(agentName,AID.ISLOCALNAME));
-		}
-		
+		msg.addReceiver(new AID(neighbor,AID.ISLOCALNAME));
 		SerializableSimpleGraph<String, MapAttribute> sg=a.myMap.getSerializableGraph();	
 		try {
 			msg.setContentObject(sg);
@@ -55,7 +92,7 @@ public class MapBehaviour extends OneShotBehaviour{
 		((AbstractDedaleAgent)this.myAgent).sendMessage(msg);
 		
 		
-		
+		// recv map (or not) and merge it
 		MessageTemplate msgTemplate=MessageTemplate.and(
 				MessageTemplate.MatchProtocol("SHARE-TOPO"),
 				MessageTemplate.MatchPerformative(ACLMessage.INFORM));
@@ -67,15 +104,14 @@ public class MapBehaviour extends OneShotBehaviour{
 			} catch (UnreadableException e) {
 				e.printStackTrace();
 			}
-			System.out.println("Merge Map");
 			a.myMap.mergeMap(sgreceived);
-			this.exitValue = 1;
+			exitValue = 1;
 		}
 	}
 	
 	@Override
 	public int onEnd() {
-		return this.exitValue;
+		return exitValue;
 	}
 
 
