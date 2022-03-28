@@ -9,7 +9,6 @@ import eu.su.mas.dedaleEtu.mas.agents.dummies.explo.SmartAgent;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation.MapAttribute;
 import jade.core.AID;
-import jade.core.Agent;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
@@ -38,12 +37,6 @@ public class MapBehaviour extends OneShotBehaviour{
 		System.out.println("MAP");
 		if(a.myMap == null){
 			a.myMap = new MapRepresentation();
-		}
-		
-		try {
-			this.myAgent.doWait(1000);
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);

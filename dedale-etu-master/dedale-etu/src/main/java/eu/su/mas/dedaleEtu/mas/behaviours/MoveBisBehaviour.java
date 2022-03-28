@@ -2,7 +2,6 @@ package eu.su.mas.dedaleEtu.mas.behaviours;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 import dataStructures.tuple.Couple;
 import eu.su.mas.dedale.env.Observation;
@@ -12,7 +11,7 @@ import eu.su.mas.dedaleEtu.mas.agents.dummies.explo.SmartAgent;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
 import jade.core.behaviours.OneShotBehaviour;
 
-public class RandomMoveBehaviour extends OneShotBehaviour{
+public class MoveBisBehaviour extends OneShotBehaviour{
 	
 	/**
 	 * 
@@ -21,7 +20,7 @@ public class RandomMoveBehaviour extends OneShotBehaviour{
 	private int exitValue = 1;
 	private SmartAgent a;
 
-	public RandomMoveBehaviour(SmartAgent a) {
+	public MoveBisBehaviour(SmartAgent a) {
 		super(a);
 		this.a = a;
 	}
