@@ -1,13 +1,12 @@
-package eu.su.mas.dedaleEtu.mas.agents.dummies.explo;
+package eu.su.mas.dedaleEtu.mas.smart.agents;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agent.behaviours.startMyBehaviours;
-import eu.su.mas.dedaleEtu.mas.behaviours.MoveBehaviour;
-import eu.su.mas.dedaleEtu.mas.behaviours.PickupBehaviour;
-import eu.su.mas.dedaleEtu.mas.behaviours.ShareBehaviour;
-import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
+import eu.su.mas.dedaleEtu.mas.smart.behaviours.*;
+import eu.su.mas.dedaleEtu.mas.smart.knowledge.*;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.FSMBehaviour;
 
@@ -15,6 +14,10 @@ public class SmartAgent extends AbstractDedaleAgent {
 
 	private static final long serialVersionUID = 8576454565436535445L;
 	public MapRepresentation myMap;
+	public MapMemory myMemory = new MapMemory();
+	public List<String> comAgent = new ArrayList<String>();
+	public List<String> noComAgent = new ArrayList<String>();
+	public String state = "explore";
 	
 
 	/**
@@ -23,10 +26,7 @@ public class SmartAgent extends AbstractDedaleAgent {
 	protected void setup(){
 
 		super.setup();
-		
 		final Object[] args = getArguments();
-		
-		List<String> list_agentNames=new ArrayList<String>();
 		
 		if(args.length==0){
 			System.err.println("Error while creating the agent, names of agent to contact expected");
@@ -34,24 +34,22 @@ public class SmartAgent extends AbstractDedaleAgent {
 		}else{
 			int i=2;// WARNING YOU SHOULD ALWAYS START AT 2. This will be corrected in the next release.
 			while (i<args.length) {
-				list_agentNames.add((String)args[i]);
+				this.comAgent.add((String)args[i]);
 				i++;
 			}
 		}
 		
+		
 		FSMBehaviour fsm = new FSMBehaviour(this);
-		fsm.registerFirstState(new ShareBehaviour(this,list_agentNames), "SHARE");
+		fsm.registerFirstState(new MemoryBehaviour(this),"MEMORY");
+		fsm.registerState(new ShareBehaviour(this), "SHARE");
 		fsm.registerState(new MoveBehaviour(this),"MOVE");
 		fsm.registerState(new PickupBehaviour(this),"PICKUP");
 		
-		fsm.registerTransition("SHARE","MOVE",0);
-		fsm.registerTransition("SHARE","MOVE",1);
-
-		fsm.registerTransition("MOVE","PICKUP",0);
-		fsm.registerTransition("MOVE","PICKUP",1);
-		
-		fsm.registerTransition("PICKUP", "SHARE", 0);
-		fsm.registerTransition("PICKUP", "SHARE", 1);
+		fsm.registerDefaultTransition("MEMORY","SHARE");
+		fsm.registerDefaultTransition("SHARE","MOVE");
+		fsm.registerDefaultTransition("MOVE","PICKUP");
+		fsm.registerDefaultTransition("PICKUP", "MEMORY");
 		
 		List<Behaviour> lb=new ArrayList<Behaviour>();
 		lb.add(fsm);

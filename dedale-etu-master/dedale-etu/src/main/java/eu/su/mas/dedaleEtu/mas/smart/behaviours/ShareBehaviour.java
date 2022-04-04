@@ -1,13 +1,13 @@
-package eu.su.mas.dedaleEtu.mas.behaviours;
+package eu.su.mas.dedaleEtu.mas.smart.behaviours;
 
 import java.io.IOException;
 import java.util.List;
 
 import dataStructures.serializableGraph.SerializableSimpleGraph;
-import eu.su.mas.dedale.mas.AbstractDedaleAgent;
-import eu.su.mas.dedaleEtu.mas.agents.dummies.explo.SmartAgent;
-import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
-import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation.MapAttribute;
+import eu.su.mas.dedaleEtu.mas.smart.agents.SmartAgent;
+import eu.su.mas.dedaleEtu.mas.smart.knowledge.MapMemory;
+import eu.su.mas.dedaleEtu.mas.smart.knowledge.MapRepresentation;
+import eu.su.mas.dedaleEtu.mas.smart.knowledge.MapRepresentation.MapAttribute;
 import jade.core.AID;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
@@ -21,14 +21,12 @@ public class ShareBehaviour extends OneShotBehaviour{
 	 */
 	private static final long serialVersionUID = -6458087836223103393L;
 	private List<String> receivers;
-	private SmartAgent a;
 	private int exitValue = 0;
 	private String neighbor = null;
 	
-	public ShareBehaviour(SmartAgent a, List<String> receivers) {
+	public ShareBehaviour(SmartAgent a) {
 		super(a);
-		this.receivers=receivers;
-		this.a = a;
+		this.receivers=a.comAgent;
 	}
 
 	
@@ -38,10 +36,12 @@ public class ShareBehaviour extends OneShotBehaviour{
 		this.pingProcedure();
 		
 		if(this.neighbor != null) {
-			this.mapProcedure();
+			this.mapReprProcedure();
+			this.mapMemoryProcedure();
 		}
 	}
-	
+
+
 	private void pingProcedure() {
 		/*
 		 * Sends ping to everyone and check if it received ping. 
@@ -55,7 +55,7 @@ public class ShareBehaviour extends OneShotBehaviour{
 			msg.addReceiver(new AID(agentName, AID.ISLOCALNAME));
 		}
 		msg.setContent("ping");
-		((AbstractDedaleAgent)this.myAgent).sendMessage(msg);
+		((SmartAgent)this.myAgent).sendMessage(msg);
 		
 		// recv ping (or not) from one agent and store its name
 		MessageTemplate msgTemplate = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
@@ -67,15 +67,15 @@ public class ShareBehaviour extends OneShotBehaviour{
 		}
 	}
 	
-	private void mapProcedure() {
+	private void mapReprProcedure() {
 		/*
 		 * Sends the map to the neighbor. Check if receives the map from the neighbor,
 		 * if so, merge the two maps and change exit value.
 		 */
 		
 		// setup map sharing
-		if(a.myMap == null){
-			a.myMap = new MapRepresentation();
+		if(((SmartAgent)this.myAgent).myMap == null){
+			((SmartAgent)this.myAgent).myMap = new MapRepresentation();
 		}
 		
 		// send map to neighbor
@@ -83,13 +83,13 @@ public class ShareBehaviour extends OneShotBehaviour{
 		msg.setProtocol("SHARE-TOPO");
 		msg.setSender(this.myAgent.getAID());
 		msg.addReceiver(new AID(neighbor,AID.ISLOCALNAME));
-		SerializableSimpleGraph<String, MapAttribute> sg=a.myMap.getSerializableGraph();	
+		SerializableSimpleGraph<String, MapAttribute> sg=((SmartAgent)this.myAgent).myMap.getSerializableGraph();	
 		try {
 			msg.setContentObject(sg);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		((AbstractDedaleAgent)this.myAgent).sendMessage(msg);
+		((SmartAgent)this.myAgent).sendMessage(msg);
 		
 		
 		// recv map (or not) and merge it
@@ -104,7 +104,43 @@ public class ShareBehaviour extends OneShotBehaviour{
 			} catch (UnreadableException e) {
 				e.printStackTrace();
 			}
-			a.myMap.mergeMap(sgreceived);
+			((SmartAgent)this.myAgent).myMap.mergeMap(sgreceived);
+			exitValue = 1;
+		}
+	}
+	
+	private void mapMemoryProcedure() {
+		/*
+		 * Sends the memory to the neighbor. Check if receives the memory from the neighbor,
+		 * if so, merge the two memories and change exit value.
+		 */
+		
+		// send memories to neighbor
+		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+		msg.setProtocol("SHARE-MEMO");
+		msg.setSender(this.myAgent.getAID());
+		msg.addReceiver(new AID(neighbor,AID.ISLOCALNAME));
+		try {
+			msg.setContentObject(((SmartAgent)this.myAgent).myMemory);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		((SmartAgent)this.myAgent).sendMessage(msg);
+		
+		
+		// recv map (or not) and merge it
+		MessageTemplate msgTemplate=MessageTemplate.and(
+				MessageTemplate.MatchProtocol("SHARE-MEMO"),
+				MessageTemplate.MatchPerformative(ACLMessage.INFORM));
+		ACLMessage msgReceived=this.myAgent.receive(msgTemplate);
+		if (msgReceived!=null) {
+			MapMemory memoReceived=null;
+			try {
+				memoReceived = (MapMemory) msgReceived.getContentObject();
+			} catch (UnreadableException e) {
+				e.printStackTrace();
+			}
+			((SmartAgent)this.myAgent).myMemory.merge(memoReceived);
 			exitValue = 1;
 		}
 	}

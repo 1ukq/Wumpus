@@ -1,8 +1,8 @@
 mapname:map2018MultiTypes
-agentExplo:Explo1:3:free:10:1:0:1:1
-agentExplo:Explo2:3:free:10:1:0:1:1
-agentExplo:Explo3:3:free:10:1:0:1:1
-agentExplo:Explo4:3:free:10:1:0:1:1
+agentCollect:Explo1:3:free:30:30:0:1:1
+agentCollect:Explo2:3:free:30:30:0:1:1
+agentCollect:Explo3:3:free:30:30:0:1:1
+agentCollect:Explo4:3:free:30:30:0:1:1
 agentExplo:Explo5:3:free:10:1:0:1:1
 agentExplo:Explo6:3:free:10:1:0:1:1
 agentExplo:Explo7:3:free:10:1:0:1:1
