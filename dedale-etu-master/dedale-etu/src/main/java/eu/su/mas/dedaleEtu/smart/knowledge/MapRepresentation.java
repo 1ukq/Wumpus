@@ -1,4 +1,4 @@
-package eu.su.mas.dedaleEtu.mas.smart.knowledge;
+package eu.su.mas.dedaleEtu.smart.knowledge;
 
 import java.io.Serializable;
 import java.util.ArrayList;

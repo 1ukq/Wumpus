@@ -1,13 +1,13 @@
-package eu.su.mas.dedaleEtu.mas.smart.behaviours;
+package eu.su.mas.dedaleEtu.smart.behaviours;
 
 import java.io.IOException;
 import java.util.List;
 
 import dataStructures.serializableGraph.SerializableSimpleGraph;
-import eu.su.mas.dedaleEtu.mas.smart.agents.SmartAgent;
-import eu.su.mas.dedaleEtu.mas.smart.knowledge.MapMemory;
-import eu.su.mas.dedaleEtu.mas.smart.knowledge.MapRepresentation;
-import eu.su.mas.dedaleEtu.mas.smart.knowledge.MapRepresentation.MapAttribute;
+import eu.su.mas.dedaleEtu.smart.agents.SmartAgent;
+import eu.su.mas.dedaleEtu.smart.knowledge.MapMemory;
+import eu.su.mas.dedaleEtu.smart.knowledge.MapRepresentation;
+import eu.su.mas.dedaleEtu.smart.knowledge.MapRepresentation.MapAttribute;
 import jade.core.AID;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;

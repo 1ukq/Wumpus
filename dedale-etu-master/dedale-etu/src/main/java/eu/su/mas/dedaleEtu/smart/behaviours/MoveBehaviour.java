@@ -1,4 +1,4 @@
-package eu.su.mas.dedaleEtu.mas.smart.behaviours;
+package eu.su.mas.dedaleEtu.smart.behaviours;
 
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -6,10 +6,10 @@ import java.util.List;
 
 import dataStructures.tuple.Couple;
 import eu.su.mas.dedale.env.Observation;
-import eu.su.mas.dedaleEtu.mas.smart.knowledge.MapRepresentation.MapAttribute;
-import eu.su.mas.dedaleEtu.mas.smart.knowledge.MemoryUnit;
-import eu.su.mas.dedaleEtu.mas.smart.agents.SmartAgent;
-import eu.su.mas.dedaleEtu.mas.smart.knowledge.MapRepresentation;
+import eu.su.mas.dedaleEtu.smart.agents.SmartAgent;
+import eu.su.mas.dedaleEtu.smart.knowledge.MapRepresentation;
+import eu.su.mas.dedaleEtu.smart.knowledge.MemoryUnit;
+import eu.su.mas.dedaleEtu.smart.knowledge.MapRepresentation.MapAttribute;
 import jade.core.behaviours.OneShotBehaviour;
 
 public class MoveBehaviour extends OneShotBehaviour{

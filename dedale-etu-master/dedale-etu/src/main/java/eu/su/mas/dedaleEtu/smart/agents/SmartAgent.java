@@ -1,12 +1,12 @@
-package eu.su.mas.dedaleEtu.mas.smart.agents;
+package eu.su.mas.dedaleEtu.smart.agents;
 
 
 import java.util.ArrayList;
 import java.util.List;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agent.behaviours.startMyBehaviours;
-import eu.su.mas.dedaleEtu.mas.smart.behaviours.*;
-import eu.su.mas.dedaleEtu.mas.smart.knowledge.*;
+import eu.su.mas.dedaleEtu.smart.behaviours.*;
+import eu.su.mas.dedaleEtu.smart.knowledge.*;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.FSMBehaviour;
 

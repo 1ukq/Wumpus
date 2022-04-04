@@ -1,12 +1,12 @@
-package eu.su.mas.dedaleEtu.mas.smart.behaviours;
+package eu.su.mas.dedaleEtu.smart.behaviours;
 
 import java.util.List;
 import java.sql.Timestamp;
 
 import dataStructures.tuple.Couple;
 import eu.su.mas.dedale.env.Observation;
-import eu.su.mas.dedaleEtu.mas.smart.agents.SmartAgent;
-import eu.su.mas.dedaleEtu.mas.smart.knowledge.MemoryUnit;
+import eu.su.mas.dedaleEtu.smart.agents.SmartAgent;
+import eu.su.mas.dedaleEtu.smart.knowledge.MemoryUnit;
 import jade.core.behaviours.OneShotBehaviour;
 
 public class MemoryBehaviour extends OneShotBehaviour{

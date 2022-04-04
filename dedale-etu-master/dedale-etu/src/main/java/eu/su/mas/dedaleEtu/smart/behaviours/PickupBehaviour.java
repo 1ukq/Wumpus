@@ -1,6 +1,6 @@
-package eu.su.mas.dedaleEtu.mas.smart.behaviours;
+package eu.su.mas.dedaleEtu.smart.behaviours;
 
-import eu.su.mas.dedaleEtu.mas.smart.agents.SmartAgent;
+import eu.su.mas.dedaleEtu.smart.agents.SmartAgent;
 import jade.core.behaviours.OneShotBehaviour;
 
 public class PickupBehaviour extends OneShotBehaviour{
