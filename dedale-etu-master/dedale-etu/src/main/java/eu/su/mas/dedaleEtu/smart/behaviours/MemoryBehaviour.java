@@ -28,6 +28,25 @@ public class MemoryBehaviour extends OneShotBehaviour{
 		String myPosition=((SmartAgent)this.myAgent).getCurrentPosition();
 		
 		if (myPosition!=null) {
+			
+			//Update stuckCount or previousNode list
+			if(((SmartAgent)this.myAgent).stuckCount == 0) {
+				((SmartAgent)this.myAgent).previousNode.add(myPosition);
+			}
+//			int last = ((SmartAgent)this.myAgent).previousNode.size() - 1;
+//			if(last > 0) {
+//				if(myPosition == ((SmartAgent)this.myAgent).previousNode.get(last)) {
+//					((SmartAgent)this.myAgent).stuckCount += 1;
+//				}
+//				else {
+//					((SmartAgent)this.myAgent).stuckCount = 0;
+//					((SmartAgent)this.myAgent).previousNode.add(myPosition);
+//				}
+//			}
+//			else {
+//				((SmartAgent)this.myAgent).previousNode.add(myPosition);
+//			}
+			
 			//List of observable from the agent's current position
 			this.lobs=((SmartAgent)this.myAgent).observe();
 			
@@ -35,7 +54,7 @@ public class MemoryBehaviour extends OneShotBehaviour{
 			Timestamp clock = new Timestamp(System.currentTimeMillis());
 			MemoryUnit memo = new MemoryUnit(clock.getTime(), null, null);
 			
-			//Update memoryMap
+			//Fill memory
 			List<Couple<Observation, Integer>> lObservations = this.lobs.get(0).getRight();
 			for(Couple<Observation,Integer> o:lObservations){
 				switch (o.getLeft()) {
@@ -52,19 +71,23 @@ public class MemoryBehaviour extends OneShotBehaviour{
 				}
 			}
 			
+			//if treasure -> save or update memory
 			if(memo.content != null) {
 				((SmartAgent)this.myAgent).myMemory.updateMemo(myPosition, memo);
 			}
+			//else no treasure  
 			else {
+				//if position in memory -> update memory
 				if(((SmartAgent)this.myAgent).myMemory.containsMemo(myPosition)) {
-					((SmartAgent)this.myAgent).myMemory.removeMemo(myPosition);
+					((SmartAgent)this.myAgent).myMemory.updateMemo(myPosition, memo);
 				}
 			}
 			
-			System.out.println(((SmartAgent)this.myAgent).getLocalName());
-			System.out.println(((SmartAgent)this.myAgent).state);
-			((SmartAgent)this.myAgent).myMemory.print();
-			System.out.println("");
+			// print
+//			System.out.println(((SmartAgent)this.myAgent).getLocalName());
+//			System.out.println(((SmartAgent)this.myAgent).state);
+//			((SmartAgent)this.myAgent).myMemory.print();
+//			System.out.println("");
 		}
 	}
 

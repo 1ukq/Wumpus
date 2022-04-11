@@ -3,6 +3,7 @@ package eu.su.mas.dedaleEtu.smart.behaviours;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import dataStructures.tuple.Couple;
 import eu.su.mas.dedale.env.Observation;
@@ -21,6 +22,8 @@ public class MoveBehaviour extends OneShotBehaviour{
 	private int exitValue = 0;
 	private String myPosition;
 	private List<Couple<String, List<Couple<Observation, Integer>>>> lobs;
+	
+	private Boolean backward = false;
 
 	public MoveBehaviour(SmartAgent a) {
 		super(a);
@@ -52,26 +55,130 @@ public class MoveBehaviour extends OneShotBehaviour{
 			//List of observable from the agent's current position
 			this.lobs=((SmartAgent)this.myAgent).observe();
 			
+			//Get the next node
 			String state = ((SmartAgent)this.myAgent).state;
-			if(state.equals("explore")) {
-				nextNode = this.goToNearestOpenNode();
+			if(state.equals("EXPLORE")) {
+				nextNode = this.exploreProcedure();
 			}
-			else if(state.equals("treasure")) {
-				nextNode = this.goToNextTreasure();
+			else if(state.equals("COLLECT")) {
+				nextNode = this.collectProcedure();
 			}
-			else if(state.equals("finish")) {
-				nextNode = this.goToRandomNode();
+			else if(state.equals("FINISH")) {
+				nextNode = this.finishProcedure();
 			}
+			
+			Boolean agentMoved = ((SmartAgent)this.myAgent).moveTo(nextNode);
+			
+			if(agentMoved) {
+				((SmartAgent)this.myAgent).stuckCount = 0;
+			}
+			else {
+				((SmartAgent)this.myAgent).stuckCount += 1;
+				
+				if(((SmartAgent)this.myAgent).stuckCount >= ((SmartAgent)this.myAgent).tolerance) {
+					int last = ((SmartAgent)this.myAgent).previousNode.size()-1;
+					nextNode = ((SmartAgent)this.myAgent).previousNode.get(last-1); //get the one before the ex last
+					Boolean agentMovedBackward = ((SmartAgent)this.myAgent).moveTo(nextNode);
+					if(agentMovedBackward) {
+						((SmartAgent)this.myAgent).previousNode.remove(last);
+					}
+				}
+			}
+//			
+//			if(agentMoved) {
+//				if(((SmartAgent)this.myAgent).stuckCount >= ((SmartAgent)this.myAgent).tolerance) {
+//					int last = ((SmartAgent)this.myAgent).previousNode.size()-1;
+//					((SmartAgent)this.myAgent).previousNode.remove(last);
+//				}
+//				
+//			}
+//			else {
+//				((SmartAgent)this.myAgent).stuckCount += 1;
+//				
+//				if(((SmartAgent)this.myAgent).stuckCount >= ((SmartAgent)this.myAgent).tolerance) {
+//					nextNode = this.getPreviousNode();
+//					int last = ((SmartAgent)this.myAgent).previousNode.size()-1;
+//					((SmartAgent)this.myAgent).previousNode.remove(last);
+//				}
+//			}
+			
+//			if(!agentMoved) {
+//				((SmartAgent)this.myAgent).stuckCount += 1;
+//			}
+//			
+//			if(((SmartAgent)this.myAgent).stuckCount >= ((SmartAgent)this.myAgent).tolerance) {
+//				
+//				if(!agentMoved) {
+//					nextNode = this.getPreviousNode();
+//				}
+//				
+//				int last = ((SmartAgent)this.myAgent).previousNode.size()-1;
+//				((SmartAgent)this.myAgent).previousNode.remove(last);
+//			}
+			
+			
+			
+			System.out.println(((SmartAgent)this.myAgent).getLocalName());
+//			System.out.println(((SmartAgent)this.myAgent).backward);
+			System.out.println(((SmartAgent)this.myAgent).stuckCount);
+			
+//			int stuckCount = ((SmartAgent)this.myAgent).stuckCount;
+//			int tolerance = ((SmartAgent)this.myAgent).tolerance;
+//			this.backward = ((SmartAgent)this.myAgent).backward;
+			
+			
+//			if(this.backward) {
+//				if(stuckCount > 0) {
+//					nextNode = this.getPreviousNode();
+//				}
+//				else {
+//					((SmartAgent)this.myAgent).backward = false;
+//				}
+//			}
+//			else {
+//				if(stuckCount >= tolerance) {
+//					((SmartAgent)this.myAgent).backward = true;
+//					nextNode = this.getPreviousNode();
+//				}
+//			}
+			
 		}
 		
-		if(nextNode != null) {
-			((SmartAgent)this.myAgent).moveTo(nextNode);
-		}
+//		if(nextNode != null) {
+//			((SmartAgent)this.myAgent).moveTo(nextNode);
+//		}
+//		
+//		if(agentMoved) {
+//			if(this.backward) {
+//				((SmartAgent)this.myAgent).stuckCount = 1;
+//				int last = ((SmartAgent)this.myAgent).previousNode.size()-1;
+//				((SmartAgent)this.myAgent).previousNode.remove(last);
+//			}
+//			else {
+//				((SmartAgent)this.myAgent).stuckCount = 0;
+//			}
+//		}
+//		else {
+//			((SmartAgent)this.myAgent).stuckCount += 1;
+//		}
+		
+//		if(agentMoved && this.backward) {
+//			int last = ((SmartAgent)this.myAgent).previousNode.size()-1;
+//			((SmartAgent)this.myAgent).previousNode.remove(last);
+//			((SmartAgent)this.myAgent).stuckCount = 0;
+//		}
 		
 	
 	}
 	
-	private String goToNearestOpenNode() {
+	
+	private String getPreviousNode() {
+		int last = ((SmartAgent)this.myAgent).previousNode.size()-2;
+		String nextNode = ((SmartAgent)this.myAgent).previousNode.get(last);
+		return nextNode;
+	}
+	
+	private String exploreProcedure() {
 		
 		//Get the surrounding nodes and, if not in closedNodes, add them to open nodes.
 		String nextNode=null;
@@ -108,7 +215,7 @@ public class MoveBehaviour extends OneShotBehaviour{
 			
 	}
 	
-	private String goToNextTreasure() {
+	private String collectProcedure() {
 		Enumeration<String> e = ((SmartAgent)this.myAgent).myMemory.content.keys();
 		MemoryUnit memo = new MemoryUnit(Long.MAX_VALUE,null,null);
 		String position = null;
@@ -134,7 +241,7 @@ public class MoveBehaviour extends OneShotBehaviour{
 		return nextNode;
 	}
 	
-	private String goToRandomNode() {
+	private String finishProcedure() {
 		return null;
 	}
 	

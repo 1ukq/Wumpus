@@ -344,7 +344,7 @@ public class Principal {
 		agentName="Smart1";
 
 		//3) If you want to give specific parameters to your agent, add them here
-		Object [] entityParametersSmart1={"Smart2","Smart3","Smart4"};
+		Object [] entityParametersSmart1={"Smart2","Smart3","Smart4", "Smart5","Smart6"};
 
 		//4) Give the class name of your agent to let the system instantiate it
 		ag=createNewDedaleAgent(c, agentName, SmartAgent.class.getName(), entityParametersSmart1);
@@ -361,7 +361,7 @@ public class Principal {
 		agentName="Smart2";
 						
 		//3) If you want to give specific parameters to your agent, add them here
-		Object [] entityParametersSmart2={"Smart1","Smart3","Smart4"};
+		Object [] entityParametersSmart2={"Smart1","Smart3","Smart4", "Smart5","Smart6"};
 						
 		//4) Give the class name of your agent to let the system instantiate it
 		ag=createNewDedaleAgent(c, agentName, SmartAgent.class.getName(), entityParametersSmart2);
@@ -380,7 +380,7 @@ public class Principal {
 		agentName="Smart3";
 				
 		//3) If you want to give specific parameters to your agent, add them here
-		Object [] entityParametersSmart3={"Smart1", "Smart2","Smart4"};
+		Object [] entityParametersSmart3={"Smart1", "Smart2","Smart4", "Smart5","Smart6"};
 				
 		//4) Give the class name of your agent to let the system instantiate it
 		ag=createNewDedaleAgent(c, agentName, SmartAgent.class.getName(), entityParametersSmart3);
@@ -398,29 +398,46 @@ public class Principal {
 		agentName="Smart4";
 		
 		//3) If you want to give specific parameters to your agent, add them here
-		Object [] entityParametersSmart4={"Smart1","Smart2","Smart3"};
+		Object [] entityParametersSmart4={"Smart1","Smart2","Smart3", "Smart5","Smart6"};
 		
 		//4) Give the class name of your agent to let the system instantiate it
 		ag=createNewDedaleAgent(c, agentName, SmartAgent.class.getName(), entityParametersSmart4);
 		agentList.add(ag);
-
+		
 		/*********
-//		 * AGENT Explo5
+		 * AGENT Smart5
 		 *********/
-//				//1) Get the container where the agent will appear
-//				c = containerList.get(ConfigurationFile.LOCAL_CONTAINER2_NAME);
-//				Assert.assertNotNull("This container does not exist",c);
-//		
-//				//2) Give the name of your agent, MUST be the same as the one given in the entities file.
-//				agentName="ImHere";
-//		
-//				//3) If you want to give specific parameters to your agent, add them here
-//				Object [] entityParametersExplo5={""};
-//		
-//				//4) Give the class name of your agent to let the system instantiate it
-//				ag=createNewDedaleAgent(c, agentName, SmartAgent.class.getName(), entityParametersExplo5);//ExploreSoloAgent
-//		
-//				agentList.add(ag);
+		//1) Get the container where the agent will appear
+		c = containerList.get(ConfigurationFile.LOCAL_CONTAINER2_NAME);
+		Assert.assertNotNull("This container does not exist",c);
+		
+		//2) Give the name of your agent, MUST be the same as the one given in the entities file.
+		agentName="Smart5";
+		
+		//3) If you want to give specific parameters to your agent, add them here
+		Object [] entityParametersSmart5={"Smart1","Smart2","Smart3", "Smart4","Smart6"};
+		
+		//4) Give the class name of your agent to let the system instantiate it
+		ag=createNewDedaleAgent(c, agentName, SmartAgent.class.getName(), entityParametersSmart5);
+		agentList.add(ag);
+		
+		/*********
+		 * AGENT Smart6
+		 *********/
+		//1) Get the container where the agent will appear
+		c = containerList.get(ConfigurationFile.LOCAL_CONTAINER2_NAME);
+		Assert.assertNotNull("This container does not exist",c);
+		
+		//2) Give the name of your agent, MUST be the same as the one given in the entities file.
+		agentName="Smart6";
+		
+		//3) If you want to give specific parameters to your agent, add them here
+		Object [] entityParametersSmart6={"Smart1","Smart2","Smart3", "Smart4","Smart5"};
+		
+		//4) Give the class name of your agent to let the system instantiate it
+		ag=createNewDedaleAgent(c, agentName, SmartAgent.class.getName(), entityParametersSmart6);
+		agentList.add(ag);
+
 		/***********************************************************************
 		 * Type of agents used when you collect and gather treasures on the map
 		 ***********************************************************************/

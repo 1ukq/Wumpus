@@ -3,6 +3,8 @@ package eu.su.mas.dedaleEtu.smart.agents;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
+
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agent.behaviours.startMyBehaviours;
 import eu.su.mas.dedaleEtu.smart.behaviours.*;
@@ -17,7 +19,12 @@ public class SmartAgent extends AbstractDedaleAgent {
 	public MapMemory myMemory = new MapMemory();
 	public List<String> comAgent = new ArrayList<String>();
 	public List<String> noComAgent = new ArrayList<String>();
-	public String state = "explore";
+	
+	public List<String> previousNode = new ArrayList<String>();
+	public String state = "EXPLORE"; // COLLECT, EXPLORE
+	public Boolean backward = false;
+	public Integer tolerance;
+	public Integer stuckCount = 0;
 	
 
 	/**
@@ -39,6 +46,10 @@ public class SmartAgent extends AbstractDedaleAgent {
 			}
 		}
 		
+		this.tolerance = Integer.parseInt(String.valueOf(this.getLocalName().charAt(5))) * 2;
+		
+		
+		
 		
 		FSMBehaviour fsm = new FSMBehaviour(this);
 		fsm.registerFirstState(new MemoryBehaviour(this),"MEMORY");
@@ -46,8 +57,9 @@ public class SmartAgent extends AbstractDedaleAgent {
 		fsm.registerState(new MoveBehaviour(this),"MOVE");
 		fsm.registerState(new PickupBehaviour(this),"PICKUP");
 		
-		fsm.registerDefaultTransition("MEMORY","SHARE");
-		fsm.registerDefaultTransition("SHARE","MOVE");
+//		fsm.registerDefaultTransition("MEMORY","SHARE");
+//		fsm.registerDefaultTransition("SHARE","MOVE");
+		fsm.registerDefaultTransition("MEMORY","MOVE");
 		fsm.registerDefaultTransition("MOVE","PICKUP");
 		fsm.registerDefaultTransition("PICKUP", "MEMORY");
 		
