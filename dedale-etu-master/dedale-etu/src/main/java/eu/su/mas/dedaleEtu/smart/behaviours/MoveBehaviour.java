@@ -3,13 +3,11 @@ package eu.su.mas.dedaleEtu.smart.behaviours;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 import dataStructures.tuple.Couple;
 import eu.su.mas.dedale.env.Observation;
 import eu.su.mas.dedaleEtu.smart.agents.SmartAgent;
 import eu.su.mas.dedaleEtu.smart.knowledge.MapRepresentation;
-import eu.su.mas.dedaleEtu.smart.knowledge.MemoryUnit;
 import eu.su.mas.dedaleEtu.smart.knowledge.MapRepresentation.MapAttribute;
 import jade.core.behaviours.OneShotBehaviour;
 
@@ -22,8 +20,6 @@ public class MoveBehaviour extends OneShotBehaviour{
 	private int exitValue = 0;
 	private String myPosition;
 	private List<Couple<String, List<Couple<Observation, Integer>>>> lobs;
-	
-	private Boolean backward = false;
 
 	public MoveBehaviour(SmartAgent a) {
 		super(a);
@@ -56,127 +52,74 @@ public class MoveBehaviour extends OneShotBehaviour{
 			this.lobs=((SmartAgent)this.myAgent).observe();
 			
 			//Get the next node
-			String state = ((SmartAgent)this.myAgent).state;
-			if(state.equals("EXPLORE")) {
+			if(((SmartAgent)this.myAgent).state.equals("EXPLORE")) {
 				nextNode = this.exploreProcedure();
 			}
-			else if(state.equals("COLLECT")) {
+			if(((SmartAgent)this.myAgent).state.equals("COLLECT")) {
 				nextNode = this.collectProcedure();
 			}
-			else if(state.equals("FINISH")) {
+			if(((SmartAgent)this.myAgent).state.equals("FINISH")) {
 				nextNode = this.finishProcedure();
 			}
 			
-			Boolean agentMoved = ((SmartAgent)this.myAgent).moveTo(nextNode);
+			//passer de explore a collect si agents ont la mm carte lors du partage
+			//passer de collect à explore si nouveau noeud ajouté aux noeuds explorés -> implique d'aller checker si le passage s'est ouvert
+			
+			Boolean agentMoved = false;
+			if(nextNode != null) {
+				agentMoved = ((SmartAgent)this.myAgent).moveTo(nextNode);
+			}
 			
 			if(agentMoved) {
 				((SmartAgent)this.myAgent).stuckCount = 0;
 			}
 			else {
-				((SmartAgent)this.myAgent).stuckCount += 1;
-				
-				if(((SmartAgent)this.myAgent).stuckCount >= ((SmartAgent)this.myAgent).tolerance) {
-					int last = ((SmartAgent)this.myAgent).previousNode.size()-1;
-					nextNode = ((SmartAgent)this.myAgent).previousNode.get(last-1); //get the one before the ex last
-					Boolean agentMovedBackward = ((SmartAgent)this.myAgent).moveTo(nextNode);
-					if(agentMovedBackward) {
-						((SmartAgent)this.myAgent).previousNode.remove(last);
-					}
-				}
+				this.stuckProcedure();
 			}
-//			
-//			if(agentMoved) {
-//				if(((SmartAgent)this.myAgent).stuckCount >= ((SmartAgent)this.myAgent).tolerance) {
-//					int last = ((SmartAgent)this.myAgent).previousNode.size()-1;
-//					((SmartAgent)this.myAgent).previousNode.remove(last);
-//				}
-//				
-//			}
-//			else {
-//				((SmartAgent)this.myAgent).stuckCount += 1;
-//				
-//				if(((SmartAgent)this.myAgent).stuckCount >= ((SmartAgent)this.myAgent).tolerance) {
-//					nextNode = this.getPreviousNode();
-//					int last = ((SmartAgent)this.myAgent).previousNode.size()-1;
-//					((SmartAgent)this.myAgent).previousNode.remove(last);
-//				}
-//			}
-			
-//			if(!agentMoved) {
-//				((SmartAgent)this.myAgent).stuckCount += 1;
-//			}
-//			
-//			if(((SmartAgent)this.myAgent).stuckCount >= ((SmartAgent)this.myAgent).tolerance) {
-//				
-//				if(!agentMoved) {
-//					nextNode = this.getPreviousNode();
-//				}
-//				
-//				int last = ((SmartAgent)this.myAgent).previousNode.size()-1;
-//				((SmartAgent)this.myAgent).previousNode.remove(last);
-//			}
-			
-			
 			
 			System.out.println(((SmartAgent)this.myAgent).getLocalName());
-//			System.out.println(((SmartAgent)this.myAgent).backward);
-			System.out.println(((SmartAgent)this.myAgent).stuckCount);
-			
-//			int stuckCount = ((SmartAgent)this.myAgent).stuckCount;
-//			int tolerance = ((SmartAgent)this.myAgent).tolerance;
-//			this.backward = ((SmartAgent)this.myAgent).backward;
-			
-			
-//			if(this.backward) {
-//				if(stuckCount > 0) {
-//					nextNode = this.getPreviousNode();
-//				}
-//				else {
-//					((SmartAgent)this.myAgent).backward = false;
-//				}
-//			}
-//			else {
-//				if(stuckCount >= tolerance) {
-//					((SmartAgent)this.myAgent).backward = true;
-//					nextNode = this.getPreviousNode();
-//				}
-//			}
+			System.out.println(((SmartAgent)this.myAgent).state);
 			
 		}
+	
+	}
+	
+	private void stuckProcedure() {
+		((SmartAgent)this.myAgent).stuckCount += 1;
 		
-//		if(nextNode != null) {
-//			((SmartAgent)this.myAgent).moveTo(nextNode);
-//		}
-//		
-//		if(agentMoved) {
-//			if(this.backward) {
-//				((SmartAgent)this.myAgent).stuckCount = 1;
-//				int last = ((SmartAgent)this.myAgent).previousNode.size()-1;
-//				((SmartAgent)this.myAgent).previousNode.remove(last);
-//			}
-//			else {
+		//regarder si il y a un golem; si oui aller à un noeud pas encore découvert si il n'y en a plus aller à un noeud aléatoire
+		
+		if(((SmartAgent)this.myAgent).stuckCount >= ((SmartAgent)this.myAgent).tolerance) {
+			int last = ((SmartAgent)this.myAgent).previousNode.size()-1;
+			if(last > 0) {
+				String nextNode = ((SmartAgent)this.myAgent).previousNode.get(last-1); //get the one before the ex last
+				Boolean agentMovedBackward = ((SmartAgent)this.myAgent).moveTo(nextNode);
+				if(agentMovedBackward) {
+					((SmartAgent)this.myAgent).previousNode.remove(last);
+				}
+			}
+		}
+	}
+	
+//	private void stuckProcedureFast(String nextNode) {
+//		Boolean agentMoved = false;
+//		while(!agentMoved && ((SmartAgent)this.myAgent).stuckCount < ((SmartAgent)this.myAgent).tolerance) {
+//			((SmartAgent)this.myAgent).stuckCount += 1;
+//			agentMoved = ((SmartAgent)this.myAgent).moveTo(nextNode);
+//			if(agentMoved) {
 //				((SmartAgent)this.myAgent).stuckCount = 0;
 //			}
 //		}
-//		else {
-//			((SmartAgent)this.myAgent).stuckCount += 1;
-//		}
-		
-//		if(agentMoved && this.backward) {
+//		
+//		if(((SmartAgent)this.myAgent).stuckCount > 0) {
 //			int last = ((SmartAgent)this.myAgent).previousNode.size()-1;
-//			((SmartAgent)this.myAgent).previousNode.remove(last);
-//			((SmartAgent)this.myAgent).stuckCount = 0;
+//			String newNextNode = ((SmartAgent)this.myAgent).previousNode.get(last-1); //get the one before the last
+//			agentMoved = ((SmartAgent)this.myAgent).moveTo(newNextNode);
+//			if(agentMoved) {
+//				((SmartAgent)this.myAgent).previousNode.remove(last);
+//			}
 //		}
-		
-	
-	}
-	
-	
-	private String getPreviousNode() {
-		int last = ((SmartAgent)this.myAgent).previousNode.size()-2;
-		String nextNode = ((SmartAgent)this.myAgent).previousNode.get(last);
-		return nextNode;
-	}
+//	}
 	
 	private String exploreProcedure() {
 		
@@ -195,7 +138,7 @@ public class MoveBehaviour extends OneShotBehaviour{
 		
 		if (!((SmartAgent)this.myAgent).myMap.hasOpenNode()){
 			//Explo finished
-//			((SmartAgent)this.myAgent).state = "treasure";
+			((SmartAgent)this.myAgent).state = "FINISH";
 			System.out.println(this.myAgent.getLocalName()+" - Exploration successfully done");
 		}else{
 			//4) select next move.
@@ -217,24 +160,29 @@ public class MoveBehaviour extends OneShotBehaviour{
 	
 	private String collectProcedure() {
 		Enumeration<String> e = ((SmartAgent)this.myAgent).myMemory.content.keys();
-		MemoryUnit memo = new MemoryUnit(Long.MAX_VALUE,null,null);
 		String position = null;
-		
+		int dist = -1;
+			
 		//proposer des solutions differentes selon les backpacks et le type de l'agent
-		
 		while(e.hasMoreElements()) {
 			String position2 = e.nextElement();
-			MemoryUnit memo2 = ((SmartAgent)this.myAgent).myMemory.getMemo(position2);
-			if(memo2.date < memo.date) {
-				memo = memo2;
-				position = position2;
+			int dist2 = ((SmartAgent)this.myAgent).myMap.getShortestPath(myPosition, position2).size();
+			
+			if(dist2 > 0) {
+				if(dist < -1) {
+					dist = dist2+1;
+				}
+				
+				if(dist < dist2) {
+					position = position2;
+					dist = dist2;
+				}
 			}
 		}
 		
-		String nextNode = null;
-		if(position != null) {
-			nextNode = ((SmartAgent)this.myAgent).myMap.getShortestPath(myPosition, position).get(0);
-			// si position = myPosition on a une erreur car le chemin est vide donc get(0) n'existe pas
+		String nextNode = ((SmartAgent)this.myAgent).myMap.getShortestPath(myPosition, position).get(0);
+		
+		if(nextNode != null) {
 			((SmartAgent)this.myAgent).moveTo(nextNode);
 		}
 		
@@ -242,7 +190,18 @@ public class MoveBehaviour extends OneShotBehaviour{
 	}
 	
 	private String finishProcedure() {
-		return null;
+		//Get the surrounding nodes and, if not in closedNodes, add them to open nodes.
+		String nextNode=null;
+		Iterator<Couple<String, List<Couple<Observation, Integer>>>> iter=this.lobs.iterator();
+		while(iter.hasNext()){
+			String nodeId=iter.next().getLeft();
+			//the node may exist, but not necessarily the edge
+			if (this.myPosition!=nodeId) {
+				((SmartAgent)this.myAgent).myMap.addEdge(this.myPosition, nodeId);
+				if (nextNode==null) nextNode=nodeId;
+			}
+		}
+		return nextNode;
 	}
 	
 	@Override

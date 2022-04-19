@@ -1,5 +1,6 @@
 package eu.su.mas.dedaleEtu.smart.behaviours;
 
+import eu.su.mas.dedale.env.Observation;
 import eu.su.mas.dedaleEtu.smart.agents.SmartAgent;
 import jade.core.behaviours.OneShotBehaviour;
 
@@ -21,7 +22,10 @@ public class PickupBehaviour extends OneShotBehaviour{
 		//Retrieve the current position
 		String myPosition=((SmartAgent)this.myAgent).getCurrentPosition();
 		
+		
 		if (myPosition!=null) {
+			((SmartAgent) this.myAgent).openLock(Observation.GOLD);
+			((SmartAgent) this.myAgent).openLock(Observation.DIAMOND);
 			((SmartAgent)this.myAgent).pick();
 		}
 		
