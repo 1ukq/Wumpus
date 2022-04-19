@@ -21,8 +21,10 @@ public class SmartAgent extends AbstractDedaleAgent {
 	
 	public List<String> previousNode = new ArrayList<String>();
 	public String state = "EXPLORE"; // COLLECT, EXPLORE, FINISH
+	public Boolean allowedToPick = true;
 	public Integer tolerance;
 	public Integer stuckCount = 0;
+	public Integer treasureQuantity = 0;
 	
 
 	/**

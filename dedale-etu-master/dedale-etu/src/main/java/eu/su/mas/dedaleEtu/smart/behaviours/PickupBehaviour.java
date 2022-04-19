@@ -23,10 +23,11 @@ public class PickupBehaviour extends OneShotBehaviour{
 		String myPosition=((SmartAgent)this.myAgent).getCurrentPosition();
 		
 		
-		if (myPosition!=null) {
+		if (myPosition!=null && ((SmartAgent)this.myAgent).allowedToPick) {
 			((SmartAgent) this.myAgent).openLock(Observation.GOLD);
-			((SmartAgent) this.myAgent).openLock(Observation.DIAMOND);
-			((SmartAgent)this.myAgent).pick();
+//			((SmartAgent) this.myAgent).openLock(Observation.DIAMOND);
+			Integer quantity = ((SmartAgent)this.myAgent).pick();
+			((SmartAgent)this.myAgent).treasureQuantity += quantity;
 		}
 		
 	}

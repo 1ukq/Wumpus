@@ -74,25 +74,21 @@ public class MoveBehaviour extends OneShotBehaviour{
 				((SmartAgent)this.myAgent).stuckCount = 0;
 			}
 			else {
+				((SmartAgent)this.myAgent).stuckCount += 1;
 				this.stuckProcedure();
 			}
-			
-			System.out.println(((SmartAgent)this.myAgent).getLocalName());
-			System.out.println(((SmartAgent)this.myAgent).state);
 			
 		}
 	
 	}
 	
 	private void stuckProcedure() {
-		((SmartAgent)this.myAgent).stuckCount += 1;
-		
 		//regarder si il y a un golem; si oui aller à un noeud pas encore découvert si il n'y en a plus aller à un noeud aléatoire
 		
 		if(((SmartAgent)this.myAgent).stuckCount >= ((SmartAgent)this.myAgent).tolerance) {
 			int last = ((SmartAgent)this.myAgent).previousNode.size()-1;
 			if(last > 0) {
-				String nextNode = ((SmartAgent)this.myAgent).previousNode.get(last-1); //get the one before the ex last
+				String nextNode = ((SmartAgent)this.myAgent).previousNode.get(last-1); //get the one before the last
 				Boolean agentMovedBackward = ((SmartAgent)this.myAgent).moveTo(nextNode);
 				if(agentMovedBackward) {
 					((SmartAgent)this.myAgent).previousNode.remove(last);
@@ -101,6 +97,7 @@ public class MoveBehaviour extends OneShotBehaviour{
 		}
 	}
 	
+// ATTENTION AU COUNT QUI EST DEJA FAIT DANS LA BOUCLE DANS UN PLUS HAUT NIVEAU
 //	private void stuckProcedureFast(String nextNode) {
 //		Boolean agentMoved = false;
 //		while(!agentMoved && ((SmartAgent)this.myAgent).stuckCount < ((SmartAgent)this.myAgent).tolerance) {
@@ -138,7 +135,7 @@ public class MoveBehaviour extends OneShotBehaviour{
 		
 		if (!((SmartAgent)this.myAgent).myMap.hasOpenNode()){
 			//Explo finished
-			((SmartAgent)this.myAgent).state = "FINISH";
+			((SmartAgent)this.myAgent).state = "COLLECT";
 			System.out.println(this.myAgent.getLocalName()+" - Exploration successfully done");
 		}else{
 			//4) select next move.
@@ -160,27 +157,24 @@ public class MoveBehaviour extends OneShotBehaviour{
 	
 	private String collectProcedure() {
 		Enumeration<String> e = ((SmartAgent)this.myAgent).myMemory.content.keys();
-		String position = null;
-		int dist = -1;
+		String nextGoal = null;
 			
 		//proposer des solutions differentes selon les backpacks et le type de l'agent
 		while(e.hasMoreElements()) {
-			String position2 = e.nextElement();
-			int dist2 = ((SmartAgent)this.myAgent).myMap.getShortestPath(myPosition, position2).size();
-			
-			if(dist2 > 0) {
-				if(dist < -1) {
-					dist = dist2+1;
-				}
-				
-				if(dist < dist2) {
-					position = position2;
-					dist = dist2;
-				}
+			String goal = e.nextElement();
+			if(((SmartAgent)this.myAgent).myMemory.content.get(goal).quantity > 0) {
+				nextGoal = goal;
 			}
+			
 		}
 		
-		String nextNode = ((SmartAgent)this.myAgent).myMap.getShortestPath(myPosition, position).get(0);
+		String nextNode = null;
+		if(nextGoal != null) {
+			List<String> path = ((SmartAgent)this.myAgent).myMap.getShortestPath(myPosition, nextGoal);
+			if(path.size()>0) {
+				nextNode = path.get(0);
+			}
+		}
 		
 		if(nextNode != null) {
 			((SmartAgent)this.myAgent).moveTo(nextNode);

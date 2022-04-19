@@ -1,9 +1,13 @@
 package eu.su.mas.dedaleEtu.smart.behaviours;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
 import dataStructures.serializableGraph.SerializableSimpleGraph;
+import dataStructures.tuple.Couple;
+import eu.su.mas.dedale.env.Observation;
+import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedaleEtu.smart.agents.SmartAgent;
 import eu.su.mas.dedaleEtu.smart.knowledge.MapMemory;
 import eu.su.mas.dedaleEtu.smart.knowledge.MapRepresentation;
@@ -36,8 +40,9 @@ public class ShareBehaviour extends OneShotBehaviour{
 		this.pingProcedure();
 		
 		if(this.neighbor != null) {
-			this.mapReprProcedure();
-			this.mapMemoryProcedure();
+			this.shareTopo();
+			this.shareMemo();
+			this.shareInfo();
 		}
 	}
 
@@ -67,7 +72,7 @@ public class ShareBehaviour extends OneShotBehaviour{
 		}
 	}
 	
-	private void mapReprProcedure() {
+	private void shareTopo() {
 		/*
 		 * Sends the map to the neighbor. Check if receives the map from the neighbor,
 		 * if so, merge the two maps and change exit value.
@@ -109,7 +114,7 @@ public class ShareBehaviour extends OneShotBehaviour{
 		}
 	}
 	
-	private void mapMemoryProcedure() {
+	private void shareMemo() {
 		/*
 		 * Sends the memory to the neighbor. Check if receives the memory from the neighbor,
 		 * if so, merge the two memories and change exit value.
@@ -141,6 +146,43 @@ public class ShareBehaviour extends OneShotBehaviour{
 				e.printStackTrace();
 			}
 			((SmartAgent)this.myAgent).myMemory.merge(memoReceived);
+			exitValue = 1;
+		}
+	}
+	
+	private void shareInfo() {
+		float capa = ((SmartAgent)this.myAgent).getBackPackFreeSpace().get(0).getRight();
+		float quantity = ((SmartAgent)this.myAgent).treasureQuantity;
+		float ratio = (quantity/(quantity+capa)); 
+		
+		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+		msg.setProtocol("SHARE-INFO");
+		msg.setSender(this.myAgent.getAID());
+		msg.addReceiver(new AID(neighbor,AID.ISLOCALNAME));
+		try {
+			msg.setContentObject(ratio);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		((SmartAgent)this.myAgent).sendMessage(msg);
+		
+		
+		MessageTemplate msgTemplate=MessageTemplate.and(
+				MessageTemplate.MatchProtocol("SHARE-INFO"),
+				MessageTemplate.MatchPerformative(ACLMessage.INFORM));
+		ACLMessage msgReceived=this.myAgent.receive(msgTemplate);
+		if (msgReceived!=null) {
+			try {
+				float ratioReceived = (float) msgReceived.getContentObject();
+				if(ratioReceived < ratio) {
+					((SmartAgent)this.myAgent).allowedToPick = false;
+				}
+				else {
+					((SmartAgent)this.myAgent).allowedToPick = true;
+				}
+			} catch (UnreadableException e) {
+				e.printStackTrace();
+			}
 			exitValue = 1;
 		}
 	}

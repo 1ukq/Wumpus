@@ -33,19 +33,6 @@ public class MemoryBehaviour extends OneShotBehaviour{
 			if(((SmartAgent)this.myAgent).stuckCount == 0) {
 				((SmartAgent)this.myAgent).previousNode.add(myPosition);
 			}
-//			int last = ((SmartAgent)this.myAgent).previousNode.size() - 1;
-//			if(last > 0) {
-//				if(myPosition == ((SmartAgent)this.myAgent).previousNode.get(last)) {
-//					((SmartAgent)this.myAgent).stuckCount += 1;
-//				}
-//				else {
-//					((SmartAgent)this.myAgent).stuckCount = 0;
-//					((SmartAgent)this.myAgent).previousNode.add(myPosition);
-//				}
-//			}
-//			else {
-//				((SmartAgent)this.myAgent).previousNode.add(myPosition);
-//			}
 			
 			//List of observable from the agent's current position
 			this.lobs=((SmartAgent)this.myAgent).observe();
