@@ -34,12 +34,6 @@ public class MemoryBehaviour extends OneShotBehaviour{
 			
 			//Update memory
 			((SmartAgent)this.myAgent).myMemory.update(myPosition, lobs);
-			
-			System.out.println(((SmartAgent)this.myAgent).getLocalName());
-			System.out.println(((SmartAgent)this.myAgent).autorizedToPick);
-			System.out.println(((SmartAgent)this.myAgent).ratios);
-			((SmartAgent)this.myAgent).myMemory.print();
-			System.out.println();
 		}
 	}
 

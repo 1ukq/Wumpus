@@ -5593,3 +5593,44 @@
 2022-05-05 23:40:49,995 [Worker-22: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/main/resources
 2022-05-05 23:40:49,996 [Worker-22: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
 2022-05-05 23:40:49,996 [Worker-22: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/test/resources
+2022-05-05 23:45:26,482 [Worker-6: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is out-of-date. Trying to update.
+2022-05-05 23:45:31,250 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:45:31,250 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/main/resources
+2022-05-05 23:45:31,253 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:45:31,253 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/test/resources
+2022-05-05 23:45:32,274 [Worker-10: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:45:32,274 [Worker-10: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/main/resources
+2022-05-05 23:45:32,276 [Worker-10: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:45:32,277 [Worker-10: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/test/resources
+2022-05-05 23:46:03,699 [Worker-12: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:46:03,699 [Worker-12: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/main/resources
+2022-05-05 23:46:03,701 [Worker-12: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:46:03,701 [Worker-12: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/test/resources
+2022-05-05 23:46:04,919 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:46:04,920 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/main/resources
+2022-05-05 23:46:04,921 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:46:04,921 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/test/resources
+2022-05-05 23:46:06,562 [Worker-13: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:46:06,563 [Worker-13: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/main/resources
+2022-05-05 23:46:06,565 [Worker-13: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:46:06,565 [Worker-13: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/test/resources
+2022-05-05 23:46:07,702 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:46:07,703 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/main/resources
+2022-05-05 23:46:07,705 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:46:07,706 [Worker-5: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/test/resources
+2022-05-05 23:46:12,557 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:46:12,558 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/main/resources
+2022-05-05 23:46:12,559 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:46:12,560 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/test/resources
+2022-05-05 23:47:32,434 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:47:32,435 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/main/resources
+2022-05-05 23:47:32,437 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:47:32,438 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/test/resources
+2022-05-05 23:47:33,521 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:47:33,521 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/main/resources
+2022-05-05 23:47:33,526 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:47:33,527 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/test/resources
+2022-05-05 23:47:50,976 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:47:50,977 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/main/resources
+2022-05-05 23:47:50,979 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-05-05 23:47:50,979 [Worker-9: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/luka/Uni/M1/S2/FOSYMA/Wumpus/dedale-etu-master/dedale-etu/src/test/resources
