@@ -20,7 +20,7 @@ public class MemoryUnit implements Serializable{
 		this.content = content;
 		this.quantity = quantity;
 	}
-	
+
 	public void print() {
 		System.out.print(this.date.getTime());
 		System.out.print(this.content);

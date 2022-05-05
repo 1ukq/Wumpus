@@ -1,9 +1,9 @@
 mapname:map2018MultiTypes
-agentCollect:Smart1:3:free:800:40:0:9:9
-agentCollect:Smart2:3:free:800:40:0:9:9
-agentCollect:Smart3:3:free:800:40:0:9:9
-agentCollect:Smart4:3:free:800:40:0:9:9
-agentCollect:Smart5:3:free:800:40:0:9:9
-agentCollect:Smart6:3:free:800:40:0:9:9
-wumpus:Golem1:1:free:-1:-1:1:1:1
-wumpus:Golem2:1:free:-1:-1:1:1:1
+agentCollect:Smart1:3:free:1000:500:0:100:100
+agentCollect:Smart2:3:free:1000:500:0:100:100
+agentCollect:Smart3:3:free:1000:500:0:100:100
+agentCollect:Smart4:3:free:1000:500:0:100:100
+agentCollect:Smart5:3:free:1000:500:0:100:100
+agentCollect:Smart6:3:free:1000:500:0:100:100
+wumpus:Golem1:1:free:100:-1:1:1:1
+wumpus:Golem2:1:free:100:-1:1:1:1

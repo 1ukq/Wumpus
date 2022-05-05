@@ -302,9 +302,9 @@ public class Principal {
 		//		//4) Give the class name of your agent to let the system instantiate it
 		//		ag=createNewDedaleAgent(c, agentName, ControlledAgent.class.getName(), entityParameters);
 		//		agentList.add(ag);	
-		/*********
-		 * GOLEM
-		 *********/
+//		/*********
+//		 * GOLEM
+//		 *********/
 //		//1) Get the container where the agent will appear
 //		c = containerList.get(ConfigurationFile.LOCAL_CONTAINER2_NAME);
 //		Assert.assertNotNull("This container does not exist",c);
@@ -344,7 +344,7 @@ public class Principal {
 		agentName="Smart1";
 
 		//3) If you want to give specific parameters to your agent, add them here
-		Object [] entityParametersSmart1={"Smart2","Smart3","Smart4", "Smart5","Smart6"};
+		Object [] entityParametersSmart1={"Smart2","Smart3", "Smart4", "Smart5","Smart6"};
 
 		//4) Give the class name of your agent to let the system instantiate it
 		ag=createNewDedaleAgent(c, agentName, SmartAgent.class.getName(), entityParametersSmart1);
@@ -361,7 +361,7 @@ public class Principal {
 		agentName="Smart2";
 						
 		//3) If you want to give specific parameters to your agent, add them here
-		Object [] entityParametersSmart2={"Smart1","Smart3","Smart4", "Smart5","Smart6"};
+		Object [] entityParametersSmart2={"Smart1","Smart3", "Smart4", "Smart5","Smart6"};
 						
 		//4) Give the class name of your agent to let the system instantiate it
 		ag=createNewDedaleAgent(c, agentName, SmartAgent.class.getName(), entityParametersSmart2);
@@ -380,7 +380,7 @@ public class Principal {
 		agentName="Smart3";
 				
 		//3) If you want to give specific parameters to your agent, add them here
-		Object [] entityParametersSmart3={"Smart1", "Smart2","Smart4", "Smart5","Smart6"};
+		Object [] entityParametersSmart3={"Smart1", "Smart2", "Smart4", "Smart5","Smart6"};
 				
 		//4) Give the class name of your agent to let the system instantiate it
 		ag=createNewDedaleAgent(c, agentName, SmartAgent.class.getName(), entityParametersSmart3);

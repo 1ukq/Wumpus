@@ -2,6 +2,7 @@ package eu.su.mas.dedaleEtu.smart.behaviours;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.List;
 
 import dataStructures.serializableGraph.SerializableSimpleGraph;
@@ -37,26 +38,33 @@ public class ShareBehaviour extends OneShotBehaviour{
 	public void action() {
 		
 		this.neighbor = null;
+		
+		//Checks if someone is nearby
 		this.pingProcedure();
 		
-		if(this.neighbor != null) {
+		//If there is someone and the agent is allowed to talk to him then
+		if(((SmartAgent)this.myAgent).autorizedToTalkTo(this.neighbor)) {
+			//Send evrything to the neighbor
 			this.sendMemo();
 			this.sendInfo();
 			this.sendTopo();
 			
+			//Recv neighbors messages (with a timeout)
 			this.recvProcedure();
 		}
 	}
 	
 	private void recvProcedure() {
+		//Check mailbox with a timeout
+		
 		boolean r1 = false;
 		boolean r2 = false;
 		boolean r3 = false;
-		long limit = 1000;
-		long wait = 100;
+		long timeout = ((SmartAgent)this.myAgent).timeout;
+		long wait = ((SmartAgent)this.myAgent).subWait;
 		
 		while((!r1) || (!r2) || (!r3)) {
-			if(limit <= 0) {
+			if(timeout <= 0) {
 				break;
 			}
 			if(!r1) {
@@ -68,12 +76,14 @@ public class ShareBehaviour extends OneShotBehaviour{
 			if(!r3) {
 				r3 = this.recvTopo();
 			}
-			limit -= wait;
+			timeout -= wait;
 			this.myAgent.doWait(wait);
 		}
 		
 		if(r1 && r2 && r3) {
-			((SmartAgent)this.myAgent).contact.replace(this.neighbor, ((SmartAgent)this.myAgent).step);
+			//Update contact
+			Timestamp ts = new Timestamp(System.currentTimeMillis());
+			((SmartAgent)this.myAgent).contact.replace(this.neighbor, ts);
 		}
 	}
 
@@ -170,9 +180,6 @@ public class ShareBehaviour extends OneShotBehaviour{
 				e.printStackTrace();
 			}
 			((SmartAgent)this.myAgent).myMemory.merge(memoReceived);
-//			System.out.println(this.myAgent.getLocalName());
-//			((SmartAgent)this.myAgent).myMemory.print();
-//			System.out.println("");
 			return true;
 		}
 		
@@ -212,7 +219,7 @@ public class ShareBehaviour extends OneShotBehaviour{
 						}
 					}
 				}
-				((SmartAgent)this.myAgent).updatePickAuthorization();
+				((SmartAgent)this.myAgent).updatePickAutorization();
 				
 				return true;
 				

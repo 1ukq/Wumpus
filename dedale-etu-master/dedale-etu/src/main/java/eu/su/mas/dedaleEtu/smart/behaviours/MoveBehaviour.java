@@ -4,7 +4,6 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-
 import dataStructures.tuple.Couple;
 import eu.su.mas.dedale.env.Observation;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
@@ -20,7 +19,6 @@ public class MoveBehaviour extends OneShotBehaviour{
 	 * 
 	 */
 	private static final long serialVersionUID = 5338091699851185926L;
-	private int exitValue = 0;
 	private String myPosition;
 	private List<Couple<String, List<Couple<Observation, Integer>>>> lobs;
 
@@ -46,7 +44,7 @@ public class MoveBehaviour extends OneShotBehaviour{
 			
 			//Wait
 			try {
-				this.myAgent.doWait(100);
+				this.myAgent.doWait(((SmartAgent)this.myAgent).wait);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -54,21 +52,29 @@ public class MoveBehaviour extends OneShotBehaviour{
 			//List of observable from the agent's current position
 			this.lobs=((SmartAgent)this.myAgent).observe();
 			
-			//Get the next node
-//			if(((SmartAgent)this.myAgent).state.equals("EXPLORE")) {
-//				nextNode = this.exploreProcedure();
-//			}
-//			if(((SmartAgent)this.myAgent).state.equals("COLLECT")) {
-//				nextNode = this.collectProcedure();
-//			}
-			Observation agentType = ((SmartAgent)this.myAgent).getMyTreasureType();
+			//Get the surrounding nodes and, if not in closedNodes, add them to open nodes.
+			Iterator<Couple<String, List<Couple<Observation, Integer>>>> iter=this.lobs.iterator();
+			while(iter.hasNext()){
+				String nodeId=iter.next().getLeft();
+				((SmartAgent)this.myAgent).myMap.addNewNode(nodeId);
+				//the node may exist, but not necessarily the edge
+				if (this.myPosition!=nodeId) {
+					((SmartAgent)this.myAgent).myMap.addEdge(this.myPosition, nodeId);
+				}
+			}
+			
+			//If I am allowed to collect then try to collect
+			Observation agentType = ((SmartAgent)this.myAgent).type;
 			if(((SmartAgent)this.myAgent).autorizedToPick && ((SmartAgent)this.myAgent).myMemory.interestingRessource(agentType)) {
 				nextNode = this.collectProcedure();
 			}
+			//Else depends on my state
 			else {
+				//Exploration
 				if(((SmartAgent)this.myAgent).state.equals("EXPLORE")) {
 					nextNode = this.exploreProcedure();
 				}
+				//Exploration is already finished
 				if(((SmartAgent)this.myAgent).state.equals("FINISH")) {
 					nextNode = this.finishProcedure();
 				}
@@ -79,114 +85,75 @@ public class MoveBehaviour extends OneShotBehaviour{
 				agentMoved = ((SmartAgent)this.myAgent).moveTo(nextNode);
 			}
 			
+			//If agent moved -> nice
 			if(agentMoved) {
 				((SmartAgent)this.myAgent).stuckCount = 0;
 			}
+			//Agent didn't moved -> stuck ?
 			else {
 				((SmartAgent)this.myAgent).stuckCount += 1;
+				((SmartAgent)this.myAgent).tolerance = ((SmartAgent)this.myAgent).degreMax - lobs.size();
 				this.stuckProcedure();
 			}
 			
 		}
 	
 	}
-
-	private void stuckProcedure() {
-		//regarder si il y a un golem; si oui aller à un noeud pas encore découvert si il n'y en a plus aller à un noeud aléatoire
-		
+	
+	private void stuckProcedure() {		
 		if(((SmartAgent)this.myAgent).stuckCount >= ((SmartAgent)this.myAgent).tolerance) {
-			int last = ((SmartAgent)this.myAgent).previousNode.size()-1;
-			if(last > 0) {
-				String nextNode = ((SmartAgent)this.myAgent).previousNode.get(last-1); //get the one before the last
-				Boolean agentMovedBackward = ((SmartAgent)this.myAgent).moveTo(nextNode);
-				if(agentMovedBackward) {
-					((SmartAgent)this.myAgent).previousNode.remove(last);
-				}
-			}
+			
+			List<Couple<String,List<Couple<Observation,Integer>>>> lobs=((AbstractDedaleAgent)this.myAgent).observe();
+			Random r= new Random();
+			int moveId=1+r.nextInt(lobs.size()-1);
+			((SmartAgent)this.myAgent).moveTo(lobs.get(moveId).getLeft());
 		}
 	}
 	
 	private String exploreProcedure() {
+		//Go to closest open node
 		
-		//Get the surrounding nodes and, if not in closedNodes, add them to open nodes.
 		String nextNode=null;
-		Iterator<Couple<String, List<Couple<Observation, Integer>>>> iter=this.lobs.iterator();
-		while(iter.hasNext()){
-			String nodeId=iter.next().getLeft();
-			boolean isNewNode=((SmartAgent)this.myAgent).myMap.addNewNode(nodeId);
-			//the node may exist, but not necessarily the edge
-			if (this.myPosition!=nodeId) {
-				((SmartAgent)this.myAgent).myMap.addEdge(this.myPosition, nodeId);
-				if (nextNode==null && isNewNode) nextNode=nodeId;
-			}
-		}
-		
 		if (!((SmartAgent)this.myAgent).myMap.hasOpenNode()){
-			//Explo finished
-//			System.out.println(((SmartAgent)this.myAgent).getLocalName() + " has finished exploration");
 			((SmartAgent)this.myAgent).state = "FINISH";
 			((SmartAgent)this.myAgent).goal = ((SmartAgent)this.myAgent).myMap.getFahrestNode(this.myPosition);
-//			System.out.println(this.myAgent.getLocalName()+" - Exploration successfully done");
 		}else{
-			//4) select next move.
-			//4.1 If there exist one open node directly reachable, go for it,
-			//	 otherwise choose one from the openNode list, compute the shortestPath and go for it
-			if (nextNode==null){
-				//no directly accessible openNode
-				//chose one, compute the path and take the first step.
-				nextNode=((SmartAgent)this.myAgent).myMap.getShortestPathToClosestOpenNode(this.myPosition).get(0);//getShortestPath(myPosition,this.openNodes.get(0)).get(0);
-				//System.out.println(this.myAgent.getLocalName()+"-- list= "+this.myMap.getOpenNodes()+"| nextNode: "+nextNode);
-			}else {
-				//System.out.println("nextNode notNUll - "+this.myAgent.getLocalName()+"-- list= "+this.myMap.getOpenNodes()+"\n -- nextNode: "+nextNode);
-			}
+			nextNode=((SmartAgent)this.myAgent).myMap.getShortestPathToClosestOpenNode(this.myPosition).get(0);//getShortestPath(myPosition,this.openNodes.get(0)).get(0);
 		}
-		
-		return nextNode;
-			
+		return nextNode;	
 	}
 	
 	private String collectProcedure() {
+		//Go to closest treasure of my type and not empty from my memory 
+		
 		Enumeration<String> e = ((SmartAgent)this.myAgent).myMemory.content.keys();
-		
 		List<String> path = null;
+		Observation agentType = ((SmartAgent)this.myAgent).type;
 		
-		//Get the surrounding nodes and, if not in closedNodes, add them to open nodes.
-		Iterator<Couple<String, List<Couple<Observation, Integer>>>> iter=this.lobs.iterator();
-		while(iter.hasNext()){
-			String nodeId=iter.next().getLeft();
-			((SmartAgent)this.myAgent).myMap.addNewNode(nodeId);
-			//the node may exist, but not necessarily the edge
-			if (this.myPosition!=nodeId) {
-				((SmartAgent)this.myAgent).myMap.addEdge(this.myPosition, nodeId);
-			}
-		}
-		
-		if(((SmartAgent)this.myAgent).autorizedToPick) {
-			Observation agentType = ((SmartAgent)this.myAgent).getMyTreasureType();
-			while(e.hasMoreElements()) {
-				String goal = e.nextElement();
+		//Archaik way to select the closest one
+		while(e.hasMoreElements()) {
+			String goal = e.nextElement();
+			
+			if(goal != this.myPosition) {
+				MemoryUnit memo = ((SmartAgent)this.myAgent).myMemory.content.get(goal);
 				
-				if(goal != this.myPosition) {
-					MemoryUnit memo = ((SmartAgent)this.myAgent).myMemory.content.get(goal);
-					
-					if(agentType == Observation.ANY_TREASURE || memo.content == agentType) {
-						if(memo.quantity > 0) {
-							if(path == null) {
-								try {
-									path = ((SmartAgent)this.myAgent).myMap.getShortestPath(myPosition, goal);
-								} catch (Exception e1) {
-								}
+				if(agentType == Observation.ANY_TREASURE || memo.content == agentType) {
+					if(memo.quantity > 0) {
+						if(path == null) {
+							try {
+								path = ((SmartAgent)this.myAgent).myMap.getShortestPath(myPosition, goal);
+							} catch (Exception e1) {
 							}
-							else {
-								List<String> path2 = null;
-								try {
-									path2 = ((SmartAgent)this.myAgent).myMap.getShortestPath(myPosition, goal);
-								} catch (Exception e1) {
-								}
-								if(path != null && path2 != null) {
-									if(path2.size() < path.size()) {
-										path = path2;
-									}
+						}
+						else {
+							List<String> path2 = null;
+							try {
+								path2 = ((SmartAgent)this.myAgent).myMap.getShortestPath(myPosition, goal);
+							} catch (Exception e1) {
+							}
+							if(path != null && path2 != null) {
+								if(path2.size() < path.size()) {
+									path = path2;
 								}
 							}
 						}
@@ -198,8 +165,6 @@ public class MoveBehaviour extends OneShotBehaviour{
 		String nextNode=null;
 		if(path != null) {
 			if(path.size()>0) {
-				System.out.println(this.myAgent.getLocalName());
-				System.out.println(path.get(path.size()-1));
 				nextNode = path.get(0);
 			}
 		}
@@ -207,11 +172,35 @@ public class MoveBehaviour extends OneShotBehaviour{
 		return nextNode;
 	}
 	
+//	private String collectProcedure() {
+//		//Better way but doesn't work	
+//	
+//		String nextNode=null;
+//		Observation agentType = ((SmartAgent)this.myAgent).type;
+//		
+//		List<String> nodeList = new ArrayList<String>(); 
+//		
+//		((SmartAgent)this.myAgent).myMemory.content.forEach((key, value) -> {
+//			if(value.quantity > 0) {
+//				if(agentType == Observation.ANY_TREASURE || value.content == agentType) {
+//					nodeList.add(key);
+//				}
+//			}
+//		});
+//		
+//		if(nodeList.size() > 0) {
+//			List<String> path = ((SmartAgent)this.myAgent).myMap.getShortestPathToClosestNodeFromList(this.myPosition, nodeList);
+//			if(path.size() > 0) {
+//				nextNode=path.get(0);
+//			}
+//		}
+//		
+//		return nextNode;
+//	}
+	
 	private String finishProcedure() {
-//		List<Couple<String,List<Couple<Observation,Integer>>>> lobs=((AbstractDedaleAgent)this.myAgent).observe();
-//		Random r= new Random();
-//		int moveId=1+r.nextInt(lobs.size()-1);
-//		return lobs.get(moveId).getLeft();
+		//No open nodes anymore -> Agent goes to the fahrest point, when it reaches it go to the fahrest point from there
+		//That way, the agents are always moving across the map and have high chances to reach each other
 		
 		String nextNode = null;
 		List<String> path = ((SmartAgent)this.myAgent).myMap.getShortestPath(this.myPosition, ((SmartAgent)this.myAgent).goal);
@@ -223,11 +212,5 @@ public class MoveBehaviour extends OneShotBehaviour{
 		}
 		
 		return nextNode;
-	}
-	
-	@Override
-	public int onEnd() {
-		return exitValue;
-	}
-	
+	}	
 }

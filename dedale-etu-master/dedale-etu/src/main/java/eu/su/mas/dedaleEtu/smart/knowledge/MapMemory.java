@@ -52,9 +52,6 @@ public class MapMemory implements Serializable{
 	public void merge(MapMemory mapMemo) {
 		Hashtable<String, MemoryUnit> newContent = mapMemo.content;
 		newContent.forEach((key, value) -> this.content.merge(key, value, (v1,v2) -> {
-//			System.out.println(v1.date);
-//			System.out.println(v2.date);
-//			System.out.println(v1.date < v2.date);
 			if(v1.date.before(v2.date)) {
 				return v2;
 			}
