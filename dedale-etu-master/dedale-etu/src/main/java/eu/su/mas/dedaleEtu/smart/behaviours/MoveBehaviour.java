@@ -46,7 +46,7 @@ public class MoveBehaviour extends OneShotBehaviour{
 			
 			//Wait
 			try {
-				this.myAgent.doWait(1000);
+				this.myAgent.doWait(100);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -123,6 +123,7 @@ public class MoveBehaviour extends OneShotBehaviour{
 		
 		if (!((SmartAgent)this.myAgent).myMap.hasOpenNode()){
 			//Explo finished
+//			System.out.println(((SmartAgent)this.myAgent).getLocalName() + " has finished exploration");
 			((SmartAgent)this.myAgent).state = "FINISH";
 			((SmartAgent)this.myAgent).goal = ((SmartAgent)this.myAgent).myMap.getFahrestNode(this.myPosition);
 //			System.out.println(this.myAgent.getLocalName()+" - Exploration successfully done");
@@ -174,7 +175,6 @@ public class MoveBehaviour extends OneShotBehaviour{
 								try {
 									path = ((SmartAgent)this.myAgent).myMap.getShortestPath(myPosition, goal);
 								} catch (Exception e1) {
-									e1.printStackTrace();
 								}
 							}
 							else {
@@ -182,7 +182,6 @@ public class MoveBehaviour extends OneShotBehaviour{
 								try {
 									path2 = ((SmartAgent)this.myAgent).myMap.getShortestPath(myPosition, goal);
 								} catch (Exception e1) {
-									e1.printStackTrace();
 								}
 								if(path != null && path2 != null) {
 									if(path2.size() < path.size()) {
@@ -199,6 +198,8 @@ public class MoveBehaviour extends OneShotBehaviour{
 		String nextNode=null;
 		if(path != null) {
 			if(path.size()>0) {
+				System.out.println(this.myAgent.getLocalName());
+				System.out.println(path.get(path.size()-1));
 				nextNode = path.get(0);
 			}
 		}

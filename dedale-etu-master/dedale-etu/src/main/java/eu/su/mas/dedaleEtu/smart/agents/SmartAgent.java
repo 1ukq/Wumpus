@@ -64,15 +64,15 @@ public class SmartAgent extends AbstractDedaleAgent {
 		
 		
 		FSMBehaviour fsm = new FSMBehaviour(this);
-		fsm.registerFirstState(new MemoryBehaviour(this),"MEMORY");
-		fsm.registerState(new ShareBehaviour(this), "SHARE");
-		fsm.registerState(new MoveBehaviour(this),"MOVE");
+		fsm.registerState(new MemoryBehaviour(this),"MEMORY");
 		fsm.registerState(new PickupBehaviour(this),"PICKUP");
+		fsm.registerState(new ShareBehaviour(this), "SHARE");
+		fsm.registerFirstState(new MoveBehaviour(this),"MOVE");
 		
-		fsm.registerDefaultTransition("MEMORY","SHARE");
+		fsm.registerDefaultTransition("MOVE","MEMORY");
+		fsm.registerDefaultTransition("MEMORY","PICKUP");
+		fsm.registerDefaultTransition("PICKUP", "SHARE");
 		fsm.registerDefaultTransition("SHARE","MOVE");
-		fsm.registerDefaultTransition("MOVE","PICKUP");
-		fsm.registerDefaultTransition("PICKUP", "MEMORY");
 		
 		List<Behaviour> lb=new ArrayList<Behaviour>();
 		lb.add(fsm);
@@ -95,6 +95,7 @@ public class SmartAgent extends AbstractDedaleAgent {
 	public void updatePickAuthorization() {
 		float limitRatio = 0;
 		float count = 0;
+		
 		for(int i = 0; i < this.ratios.size(); i++) {
 			Couple<Float,Observation> ratio = this.ratios.get(i);
 			if(ratio.getRight() == this.getMyTreasureType()) {

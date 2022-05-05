@@ -44,7 +44,6 @@ public class PickupBehaviour extends OneShotBehaviour{
 				default:
 					break;
 				}
-				break;
 			}
 			
 			
@@ -63,6 +62,9 @@ public class PickupBehaviour extends OneShotBehaviour{
 						((SmartAgent)this.myAgent).ratios.set(id, new Couple<Float,Observation>(ratio,  ((SmartAgent)this.myAgent).getMyTreasureType()));
 						
 						((SmartAgent)this.myAgent).updatePickAuthorization();
+						
+						lobs = ((SmartAgent)this.myAgent).observe();
+						((SmartAgent)this.myAgent).myMemory.update(myPosition, lobs);
 					}
 				}
 			}

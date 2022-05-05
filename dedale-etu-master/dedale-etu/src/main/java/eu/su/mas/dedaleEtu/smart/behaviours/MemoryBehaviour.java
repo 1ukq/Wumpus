@@ -15,7 +15,6 @@ public class MemoryBehaviour extends OneShotBehaviour{
 	 * 
 	 */
 	private static final long serialVersionUID = 6667090578441430613L;
-	private List<Couple<String, List<Couple<Observation, Integer>>>> lobs;
 	
 	public MemoryBehaviour(SmartAgent a) {
 		super(a);
@@ -37,45 +36,19 @@ public class MemoryBehaviour extends OneShotBehaviour{
 			}
 			
 			//List of observable from the agent's current position
-			this.lobs=((SmartAgent)this.myAgent).observe();
+			List<Couple<String, List<Couple<Observation, Integer>>>> lobs=((SmartAgent)this.myAgent).observe();
 			
-			//New memory
-			Timestamp clock = new Timestamp(System.currentTimeMillis());
-			MemoryUnit memo = new MemoryUnit(clock.getTime(), Observation.ANY_TREASURE, 0);
-			
-			//Fill memory
-			List<Couple<Observation, Integer>> lObservations = this.lobs.get(0).getRight();
-			for(Couple<Observation,Integer> o:lObservations){
-				switch (o.getLeft()) {
-				case GOLD:
-					memo.content = o.getLeft();
-					memo.quantity = o.getRight();
-					break;
-				case DIAMOND:
-					memo.content = o.getLeft();
-					memo.quantity = o.getRight();
-					break;
-				default:
-					break;
-				}
-			}
-			
-			if(((SmartAgent)this.myAgent).myMemory.containsMemo(myPosition)) {
-				((SmartAgent)this.myAgent).myMemory.updateMemo(myPosition, memo);
-			}
-			else if (memo.quantity > 0){
-				((SmartAgent)this.myAgent).myMemory.updateMemo(myPosition, memo);
-			}
+			((SmartAgent)this.myAgent).myMemory.update(myPosition, lobs);
 			
 			// print
-			System.out.println(((SmartAgent)this.myAgent).getLocalName());
-//			System.out.println(((SmartAgent)this.myAgent).state);
-//			System.out.println(((SmartAgent)this.myAgent).ratios);
-//			System.out.println(((SmartAgent)this.myAgent).autorizedToPick);
-//			System.out.println(((SmartAgent)this.myAgent).step);
-			((SmartAgent)this.myAgent).myMemory.print();
-//			System.out.println(((SmartAgent)this.myAgent).goal);
-			System.out.println("");
+//			System.out.println(((SmartAgent)this.myAgent).getLocalName());
+////			System.out.println(((SmartAgent)this.myAgent).state);
+////			System.out.println(((SmartAgent)this.myAgent).ratios);
+////			System.out.println(((SmartAgent)this.myAgent).autorizedToPick);
+////			System.out.println(((SmartAgent)this.myAgent).step);
+//			((SmartAgent)this.myAgent).myMemory.print();
+////			System.out.println(((SmartAgent)this.myAgent).goal);
+//			System.out.println("");
 		}
 	}
 

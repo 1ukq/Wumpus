@@ -170,6 +170,9 @@ public class ShareBehaviour extends OneShotBehaviour{
 				e.printStackTrace();
 			}
 			((SmartAgent)this.myAgent).myMemory.merge(memoReceived);
+//			System.out.println(this.myAgent.getLocalName());
+//			((SmartAgent)this.myAgent).myMemory.print();
+//			System.out.println("");
 			return true;
 		}
 		
