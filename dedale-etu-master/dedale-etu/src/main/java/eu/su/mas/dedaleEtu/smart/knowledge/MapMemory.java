@@ -1,7 +1,10 @@
 package eu.su.mas.dedaleEtu.smart.knowledge;
 
 import java.io.Serializable;
+import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Set;
 
 import eu.su.mas.dedale.env.Observation;
 
@@ -60,7 +63,24 @@ public class MapMemory implements Serializable{
 	}
 
 	public boolean containsMemo(String position) {
-		return this.content.contains(position);
+		return this.content.containsKey(position);
+	}
+	
+	public boolean interestingRessource(Observation agentType) {
+		Set<String> keys = this.content.keySet();
+		Iterator<String> itr = keys.iterator();
+		String key;
+		MemoryUnit memo;
+		while (itr.hasNext()) { 
+		       key = itr.next();
+		       memo = this.content.get(key);
+		       if(memo.quantity > 0) {
+		    	   if((agentType == Observation.ANY_TREASURE) || (agentType == memo.content)) {
+		    		   return true;
+		    	   }
+		       }
+		}
+		return false;
 	}
 	
 }

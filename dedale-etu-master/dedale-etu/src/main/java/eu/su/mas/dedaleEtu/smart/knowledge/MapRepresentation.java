@@ -172,6 +172,19 @@ public class MapRepresentation implements Serializable {
 		return getShortestPath(myPosition,closest.get().getLeft());
 	}
 	
+	public String getFahrestNode(String myPosition) {
+		List<String> nodes = getNodes();
+		
+		List<Couple<String,Integer>> lc=
+				nodes.stream()
+				.map(on -> (getShortestPath(myPosition,on)!=null)? new Couple<String, Integer>(on,getShortestPath(myPosition,on).size()): new Couple<String, Integer>(on,Integer.MAX_VALUE))//some nodes my be unreachable if the agents do not share at least one common node.
+				.collect(Collectors.toList());
+
+		Optional<Couple<String,Integer>> fahrest=lc.stream().max(Comparator.comparing(Couple::getRight));
+		
+		return fahrest.get().getLeft();
+	}
+	
 	public List<String> getShortestPathToAnyOpenNode(String myPosition) {
 		//1) Get all openNodes
 		List<String> opennodes=getOpenNodes();
@@ -186,6 +199,12 @@ public class MapRepresentation implements Serializable {
 		
 		//3) Compute shorterPath
 		return getShortestPath(myPosition,closest.get().getLeft());
+	}
+	
+	public List<String> getNodes(){
+		return this.g.nodes()
+				.map(Node::getId)
+				.collect(Collectors.toList());
 	}
 
 	public List<String> getOpenNodes(){

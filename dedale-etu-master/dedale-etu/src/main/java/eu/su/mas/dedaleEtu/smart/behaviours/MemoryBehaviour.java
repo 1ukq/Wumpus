@@ -27,6 +27,8 @@ public class MemoryBehaviour extends OneShotBehaviour{
 		//Retrieve the current position
 		String myPosition=((SmartAgent)this.myAgent).getCurrentPosition();
 		
+		((SmartAgent)this.myAgent).step += 1;
+		
 		if (myPosition!=null) {
 			
 			//Update stuckCount or previousNode list
@@ -39,7 +41,7 @@ public class MemoryBehaviour extends OneShotBehaviour{
 			
 			//New memory
 			Timestamp clock = new Timestamp(System.currentTimeMillis());
-			MemoryUnit memo = new MemoryUnit(clock.getTime(), null, null);
+			MemoryUnit memo = new MemoryUnit(clock.getTime(), Observation.ANY_TREASURE, 0);
 			
 			//Fill memory
 			List<Couple<Observation, Integer>> lObservations = this.lobs.get(0).getRight();
@@ -58,23 +60,22 @@ public class MemoryBehaviour extends OneShotBehaviour{
 				}
 			}
 			
-			//if treasure -> save or update memory
-			if(memo.content != null) {
+			if(((SmartAgent)this.myAgent).myMemory.containsMemo(myPosition)) {
 				((SmartAgent)this.myAgent).myMemory.updateMemo(myPosition, memo);
 			}
-			//else no treasure  
-			else {
-				//if position in memory -> update memory
-				if(((SmartAgent)this.myAgent).myMemory.containsMemo(myPosition)) {
-					((SmartAgent)this.myAgent).myMemory.updateMemo(myPosition, memo);
-				}
+			else if (memo.quantity > 0){
+				((SmartAgent)this.myAgent).myMemory.updateMemo(myPosition, memo);
 			}
 			
 			// print
-//			System.out.println(((SmartAgent)this.myAgent).getLocalName());
+			System.out.println(((SmartAgent)this.myAgent).getLocalName());
 //			System.out.println(((SmartAgent)this.myAgent).state);
-//			((SmartAgent)this.myAgent).myMemory.print();
-//			System.out.println("");
+//			System.out.println(((SmartAgent)this.myAgent).ratios);
+//			System.out.println(((SmartAgent)this.myAgent).autorizedToPick);
+//			System.out.println(((SmartAgent)this.myAgent).step);
+			((SmartAgent)this.myAgent).myMemory.print();
+//			System.out.println(((SmartAgent)this.myAgent).goal);
+			System.out.println("");
 		}
 	}
 

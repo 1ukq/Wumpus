@@ -25,24 +25,55 @@ public class ShareBehaviour extends OneShotBehaviour{
 	 */
 	private static final long serialVersionUID = -6458087836223103393L;
 	private List<String> receivers;
-	private int exitValue = 0;
 	private String neighbor = null;
 	
 	public ShareBehaviour(SmartAgent a) {
 		super(a);
-		this.receivers=a.comAgent;
+		this.receivers=a.otherAgents;
 	}
 
 	
 	@Override
 	public void action() {
 		
+		this.neighbor = null;
 		this.pingProcedure();
 		
 		if(this.neighbor != null) {
-			this.shareTopo();
-			this.shareMemo();
-			this.shareInfo();
+			this.sendMemo();
+			this.sendInfo();
+			this.sendTopo();
+			
+			this.recvProcedure();
+		}
+	}
+	
+	private void recvProcedure() {
+		boolean r1 = false;
+		boolean r2 = false;
+		boolean r3 = false;
+		long limit = 1000;
+		long wait = 100;
+		
+		while((!r1) || (!r2) || (!r3)) {
+			if(limit <= 0) {
+				break;
+			}
+			if(!r1) {
+				r1 = this.recvMemo();
+			}
+			if(!r2) {
+				r2 = this.recvInfo();
+			}
+			if(!r3) {
+				r3 = this.recvTopo();
+			}
+			limit -= wait;
+			this.myAgent.doWait(wait);
+		}
+		
+		if(r1 && r2 && r3) {
+			((SmartAgent)this.myAgent).contact.replace(this.neighbor, ((SmartAgent)this.myAgent).step);
 		}
 	}
 
@@ -72,12 +103,7 @@ public class ShareBehaviour extends OneShotBehaviour{
 		}
 	}
 	
-	private void shareTopo() {
-		/*
-		 * Sends the map to the neighbor. Check if receives the map from the neighbor,
-		 * if so, merge the two maps and change exit value.
-		 */
-		
+	private void sendTopo() {
 		// setup map sharing
 		if(((SmartAgent)this.myAgent).myMap == null){
 			((SmartAgent)this.myAgent).myMap = new MapRepresentation();
@@ -95,8 +121,9 @@ public class ShareBehaviour extends OneShotBehaviour{
 			e.printStackTrace();
 		}
 		((SmartAgent)this.myAgent).sendMessage(msg);
-		
-		
+	}
+	
+	private Boolean recvTopo() {
 		// recv map (or not) and merge it
 		MessageTemplate msgTemplate=MessageTemplate.and(
 				MessageTemplate.MatchProtocol("SHARE-TOPO"),
@@ -110,16 +137,12 @@ public class ShareBehaviour extends OneShotBehaviour{
 				e.printStackTrace();
 			}
 			((SmartAgent)this.myAgent).myMap.mergeMap(sgreceived);
-			exitValue = 1;
-		}
+			return true;
+		}	
+		return false;
 	}
 	
-	private void shareMemo() {
-		/*
-		 * Sends the memory to the neighbor. Check if receives the memory from the neighbor,
-		 * if so, merge the two memories and change exit value.
-		 */
-		
+	private void sendMemo() {
 		// send memories to neighbor
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setProtocol("SHARE-MEMO");
@@ -131,9 +154,10 @@ public class ShareBehaviour extends OneShotBehaviour{
 			e.printStackTrace();
 		}
 		((SmartAgent)this.myAgent).sendMessage(msg);
-		
-		
-		// recv map (or not) and merge it
+	}
+	
+	private Boolean recvMemo() {
+		// recv memories (or not) and merge it
 		MessageTemplate msgTemplate=MessageTemplate.and(
 				MessageTemplate.MatchProtocol("SHARE-MEMO"),
 				MessageTemplate.MatchPerformative(ACLMessage.INFORM));
@@ -146,51 +170,54 @@ public class ShareBehaviour extends OneShotBehaviour{
 				e.printStackTrace();
 			}
 			((SmartAgent)this.myAgent).myMemory.merge(memoReceived);
-			exitValue = 1;
+			return true;
 		}
+		
+		return false;
 	}
 	
-	private void shareInfo() {
-		float capa = ((SmartAgent)this.myAgent).getBackPackFreeSpace().get(0).getRight();
-		float quantity = ((SmartAgent)this.myAgent).treasureQuantity;
-		float ratio = (quantity/(quantity+capa)); 
-		
+	private void sendInfo() {
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setProtocol("SHARE-INFO");
 		msg.setSender(this.myAgent.getAID());
 		msg.addReceiver(new AID(neighbor,AID.ISLOCALNAME));
 		try {
-			msg.setContentObject(ratio);
+			msg.setContentObject((Serializable) ((SmartAgent)this.myAgent).ratios);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		((SmartAgent)this.myAgent).sendMessage(msg);
-		
-		
+	}
+	
+	private Boolean recvInfo() {
 		MessageTemplate msgTemplate=MessageTemplate.and(
 				MessageTemplate.MatchProtocol("SHARE-INFO"),
 				MessageTemplate.MatchPerformative(ACLMessage.INFORM));
 		ACLMessage msgReceived=this.myAgent.receive(msgTemplate);
 		if (msgReceived!=null) {
 			try {
-				float ratioReceived = (float) msgReceived.getContentObject();
-				if(ratioReceived < ratio) {
-					((SmartAgent)this.myAgent).allowedToPick = false;
+				List<Couple<Float,Observation>> ratiosReceived = (List<Couple<Float,Observation>>) msgReceived.getContentObject();
+				for(int i = 0; i < ratiosReceived.size(); i++) {
+					Couple<Float, Observation> ratio1 = ((SmartAgent)this.myAgent).ratios.get(i);
+					Couple<Float, Observation> ratio2 = ratiosReceived.get(i);
+					if(ratio1.getLeft() == null) {
+						((SmartAgent)this.myAgent).ratios.set(i, ratio2);
+					}
+					else if (ratio2.getLeft() != null) {
+						if (ratio1.getLeft() < ratio2.getLeft()) {
+							((SmartAgent)this.myAgent).ratios.set(i, ratio2);
+						}
+					}
 				}
-				else {
-					((SmartAgent)this.myAgent).allowedToPick = true;
-				}
+				((SmartAgent)this.myAgent).updatePickAuthorization();
+				
+				return true;
+				
 			} catch (UnreadableException e) {
 				e.printStackTrace();
 			}
-			exitValue = 1;
 		}
+		
+		return false;
 	}
-	
-	@Override
-	public int onEnd() {
-		return exitValue;
-	}
-
-
 }
