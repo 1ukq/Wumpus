@@ -52,7 +52,7 @@ public class SmartAgent extends AbstractDedaleAgent {
 		super.setup();
 		final Object[] args = getArguments();
 		
-		this.id = Integer.parseInt(String.valueOf(this.getLocalName().charAt(5))) - 1; // A AMELIORER !
+		this.id = Integer.parseInt(String.valueOf(this.getLocalName().substring(5))) - 1; // A AMELIORER !
 		
 //		this.tolerance = (this.id + 2);
 		
